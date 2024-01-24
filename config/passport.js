@@ -5,17 +5,18 @@ const User = require('../models/user')
 
 let opts = {}
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = process.env.JWT_SECRET;
+opts.secretOrKey = "Jakaza";
 
 
 passport.use(new JwtStrategy(opts, async function(jwt_payload, done) {
     try {
         const user = await User.findOne({_id: jwt_payload.id})
-        if(!user){
-            return done(null, false);
+        if(user){
+            return done(null, user);
         }
-        return done(null, user);
+        return done(null, false);
+        
     } catch (error) {
-        return done(error, false);
+        return done(null, false);
     }
 }));

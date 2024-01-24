@@ -4,7 +4,8 @@ const StatusCodes = {
   Not_Found : 404,
   Internal : 500,
   Created: 201,
-  Success: 200
+  Success: 200,
+  Redirect: 302
 }
 
 module.exports = StatusCodes

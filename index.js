@@ -10,7 +10,6 @@ const passport = require('passport')
 
 initDB()
 
-
 //Middlewares Config
 app.use(express.json())
 app.use(bodyParser.urlencoded({extended: false}))
@@ -23,7 +22,7 @@ app.get('/testing', (req, res) =>{
 })
 
 require('./config/passport')
-app.use(passport.initialize())
+app.use(passport.initialize());
 app.use(routes)
 
 

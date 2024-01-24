@@ -5,6 +5,9 @@ const jwt = require('jsonwebtoken')
 const StatusCodes = require('./constants/StatusCodes')
 const User = require('./models/user')
 const passport = require('passport')
+const MultipleChoiceQuestion = require('./models/multipleChoiceQuestion')
+const TrueFalseQuestion = require('./models/trueFalseQuestion')
+const authUser = require('./config/auth')
 
 // Auth Routes 
 router.post('/register',async (req ,res) =>{
@@ -59,7 +62,7 @@ router.post('/login', async (req ,res) =>{
             id: userExist._id,
             username: userExist.username
         }
-        const secretOrPrivateKey = process.env.JWT_SECRET
+        const secretOrPrivateKey = "Jakaza"
 
         const token =  jwt.sign(payload, secretOrPrivateKey, {expiresIn: '1d'} )
 
@@ -77,13 +80,6 @@ router.post('/login', async (req ,res) =>{
     }
 })
 
-router.get('/testing2', passport.authenticate('jwt', {session: false}), (req, res) =>{
-    res.json({
-        status: true,
-        user: req.user
-    })
-    // res.status(200).json({status: true,message: 'Testing routes from routes dir'})
-})
 
 
 // Render Pages - EJS
@@ -95,20 +91,76 @@ router.get('/register', (req, res) =>{
 router.get('/login', (req, res) =>{
     res.render('login')
 })
-router.get('/add-question', passport.authenticate('jwt', { session: false }), (req, res) => {
-    
-    console.log('Auth : ' + req.isAuthenticated());
-    if (!req.isAuthenticated()) {
-        // User is not authenticated, redirect to the login page
-        return res.redirect('/login');
-    }
-    // User is authenticated, render the 'create_question' page
-    res.render('create_question', { user: req.user });
+
+
+router.get('/add-question', (req, res, next) =>{
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        if (err) {
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        if (!user) {
+            console.log('You cannot access add-question you not authorized');
+            return res.status(401).redirect('login')
+        }
+        return res.render('create_question')
+    })(req, res, next)
+});
+
+router.get('/browse', authUser())
+
+router.get('/protected-route', (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        // Custom callback function logic
+        if (err) {
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        if (!user) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        // Continue with the route logic if authentication is successful
+        res.json({ message: 'You are authenticated!', user });
+    })(req, res, next);
 });
 
 
-router.get('/browse', (req, res) =>{
-    res.render('browse')
+
+// QUESTION ROUTE
+
+router.post('/add-question', passport.authenticate('jwt', {session: false}) , async (req, res)=>{
+    req.body.createdBy = req.user._id
+    const { questionType, ...cleanedQuestion } = req.body;
+    try {
+        if(questionType == "A"){
+            const newQuestion = new MultipleChoiceQuestion(cleanedQuestion)
+            await newQuestion.save()
+            const currentUsser = req.user
+            currentUsser.createdQuestions.push(newQuestion._id)
+            await currentUsser.save()
+            res.status(StatusCodes.Created).json({
+                status: true, 
+                message: 'Quiz has been successfully added. Type A',
+                question: newQuestion
+            })
+        }else{
+            const newQuestion = new TrueFalseQuestion(cleanedQuestion)
+            await newQuestion.save()
+            const currentUsser = req.user
+            currentUsser.createdQuestions.push(newQuestion._id)
+            await currentUsser.save()
+            res.status(StatusCodes.Created).json({
+                status: true, 
+                message: 'Quiz has been successfully added.',
+                question: newQuestion
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(StatusCodes.Internal).json({
+            status: false,
+            message: 'Something went wrong try again...',
+            error  
+        })
+    }
 })
 
 

@@ -16,6 +16,21 @@ var userSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
+    quizlimit: {
+        type: Number,
+        require: true,
+        default: 25
+    },
+    createdQuestions: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "MultipleChoiceQuestion"
+        },
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "TrueFalseQuestion"
+        }
+    ]
 });
 
 //Export the model
