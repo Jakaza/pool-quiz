@@ -36,6 +36,11 @@ var multipleChoiceQuestionSchema = new mongoose.Schema({
         required:true,
         default: false
     },
+    isPublished: {
+        type:String,
+        required:true,
+        default: false
+    },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
