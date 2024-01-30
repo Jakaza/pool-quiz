@@ -167,16 +167,17 @@ router.put('/update-question/:questionId',  passport.authenticate('jwt', {sessio
     // req.body.createdBy = req.user._id
     const { questionType, ...cleanedQuestion } = req.body;
     const currentUser = req.user
-
     const {questionId} = req.params
     try {
         if(questionType == "A"){
             const question = await MultipleChoiceQuestion.findOne({_id: questionId})
 
-            console.log('User  ID : ' + currentUser._id);
-            console.log('CreatedBy  ID : ' + question.createdBy);
-            if(question.createdBy != currentUser._id){
-                return res.status(StatusCodes.Not_Found).json({status: false, message: 'Not authorised to update this quiz'})
+            const currentUserId = currentUser._id.toString()
+            const quizUserId = question.createdBy.toString()
+            
+            if(currentUserId !== quizUserId){
+                return res.status(StatusCodes.Not_Found)
+                .json({status: false, message: 'Not authorized to update this quiz'})
             }
             if(!question){
                 return res.status(StatusCodes.Not_Found).json({status: false, message: 'Question was not found'})
@@ -197,6 +198,14 @@ router.put('/update-question/:questionId',  passport.authenticate('jwt', {sessio
             })
         }else if(questionType == "B"){
             const question = await TrueFalseQuestion.findOne({_id: questionId})
+
+            const currentUserId = currentUser._id.toString()
+            const quizUserId = question.createdBy.toString()
+            
+            if(currentUserId !== quizUserId){
+                return res.status(StatusCodes.Not_Found)
+                .json({status: false, message: 'Not authorized to update this quiz'})
+            }
 
             question.question = req.body?.question ?? question.question
             question.answer = req.body?.answer ?? question.answer
@@ -224,6 +233,80 @@ router.put('/update-question/:questionId',  passport.authenticate('jwt', {sessio
             message: 'Something went wrong try again...',
             error  
         })
+    }
+})
+
+// When a user removes a question, only the createdBy ID is removed.
+// The SuperAdmin will determine whether to permanently delete the question or not.
+// Ownership is revoked, but the question itself is retained in the database.
+router.delete('/remove-question/:questionId',passport.authenticate('jwt', {session: false}), async (req, res)=>{
+    const {questionId} = req.params
+    const currentUser = req.user
+    console.log(currentUser);
+    try {
+        const question = await MultipleChoiceQuestion.findOne({_id: questionId})
+        if(!question){
+            return res.status(StatusCodes.Not_Found)
+                    .json({status: false, message: 'Question was not found',})
+        }
+        const currentUserId = currentUser._id.toString()
+        const quizUserId = question.createdBy.toString()
+        if(currentUserId !== quizUserId){
+            return res.status(StatusCodes.Bad_Request)
+            .json({status: false, message: 'Not authorized to update this quiz'})
+        }
+        question.createdBy = null
+        await question.save()
+        res.status(StatusCodes.Success)
+        .json({status: true, message: 'Question has been successfully removed'})
+
+    } catch (err) {
+        console.log(err);
+        res.status(StatusCodes.Internal)
+        .json({status: false, message: 'Something went wrong try again...',
+        error: err  })
+    }
+})
+// The SuperAdmin has the authority to delete questions 
+// either without ownership or questions they own.
+router.delete('/delete-question', passport.authenticate('jwt', {session: false}), async()=>{
+    const {questionId} = req.params
+    const currentUser = req.user
+    console.log(currentUser);
+    try {
+        const question = await MultipleChoiceQuestion.findOne({_id: questionId})
+        if(!question){
+            return res.status(StatusCodes.Not_Found)
+                    .json({status: false, message: 'Question was not found',})
+        }
+        TODO: // Super-admin must delete question from DB
+        res.status(StatusCodes.Success)
+        .json({status: true, message: 'Question has been successfully removed'})
+
+    } catch (err) {
+        console.log(err);
+        res.status(StatusCodes.Internal)
+        .json({status: false, message: 'Something went wrong try again...',
+        error: err  })
+    }
+})
+router.get('/questions', passport.authenticate('jwt', {session: false}) ,async (req, res)=>{
+    const currentUser = req.user
+    try {
+        const multipleChoiceQuestions = await MultipleChoiceQuestion.find({createdBy: currentUser._id})
+        const trueFalseQuestion = await TrueFalseQuestion.find({createdBy: currentUser._id})
+        const questions = {
+            'Type A' : multipleChoiceQuestions,
+            'Type B' : trueFalseQuestion
+        }
+        res.status(StatusCodes.Success)
+            .json({status: true , questions: questions
+        })
+    } catch (error) {
+        console.log(err);
+        res.status(StatusCodes.Internal)
+            .json({status: false, message: 'Something went wrong try again...',
+        error: err  })
     }
 })
 
