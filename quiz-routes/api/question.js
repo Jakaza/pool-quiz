@@ -6,6 +6,28 @@ const TrueFalseQuestion = require('../../models/TrueFalseQuestion')
 
 // https://opentdb.com/api.php?amount=10&category=23&difficulty=hard&type=multiple
 
+router.get('/generate-url', async (req, res )=>{
+    let url = 'http://localhost:3000/api/v1/question?'
+
+    // Construct query parameters
+    const queryParams = [];
+    if (req.query.amount) queryParams.push('amount=' + encodeURIComponent(req.query.amount));
+    if (req.query.category) queryParams.push('category=' + encodeURIComponent(req.query.category));
+    if (req.query.difficulty) queryParams.push('difficulty=' + encodeURIComponent(req.query.difficulty));
+    if (req.query.type) queryParams.push('type=' + encodeURIComponent(req.query.type));
+
+    if (queryParams.length > 0) {
+        url += '?' + queryParams.join('&');
+    }
+
+    res.status(StatusCodes.Created).json({
+        status: true, 
+        message: 'Url has been successfully created.',
+        url: url,
+    })
+})
+
+
 router.get('/question', async (req, res )=>{
         // Build the query object based on query parameters
         const query = {};
