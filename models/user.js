@@ -1,5 +1,7 @@
 const mongoose = require('mongoose'); // Erase if already required
 
+const userRoles = ['BASIC', 'ADMIN', 'SUPER ADMIN'];
+
 var userSchema = new mongoose.Schema({
     username:{
         type:String,
@@ -20,6 +22,11 @@ var userSchema = new mongoose.Schema({
         type: Number,
         require: true,
         default: 25
+    },
+    roles: {
+        type: String,
+        enum: userRoles,
+        default: 'BASIC',
     },
     createdQuestions: [
         {
