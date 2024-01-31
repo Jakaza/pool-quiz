@@ -1,0 +1,16 @@
+main{
+    display: flex;
+    flex-direction: column;
+    align-items: self-start;
+    text-align: start;
+    font-family: 'Source Sans 3', sans-serif; 
+    justify-content: flex-start;
+    height: calc(90vh - 65px);
+    padding: 35px 0;
+}
+
+
+#emailHelp{
+    color: rgb(200, 200, 200);
+    font-size: 12px;
+}

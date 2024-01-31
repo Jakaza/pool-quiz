@@ -21,6 +21,10 @@ a{
     text-decoration: none;
     color: #FFFFFF;
 }
+dl, ol, ul {
+    margin-top: 0;
+    margin-bottom: 0;
+}
 
 header{
     display: flex;
