@@ -84,6 +84,10 @@ router.post('/login', async (req ,res) =>{
 
 // Render Pages - EJS
 
+router.get('/add-quiz', (req, res) =>{
+    res.render('add_quiz_sample')
+})
+
 router.get('/register', (req, res) =>{
     res.render('register')
 })
@@ -95,6 +99,7 @@ router.get('/api-setting', (req, res) =>{
 router.get('/login', (req, res) =>{
     res.render('login')
 })
+
 
 
 router.get('/add-question', (req, res, next) =>{

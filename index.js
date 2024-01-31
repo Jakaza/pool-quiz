@@ -11,7 +11,7 @@ const seedDB = require('./config/seed')
 const passport = require('passport')
 
 initDB().then(() => {
-    seedDB()
+    // seedDB()
 });
        
 
