@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700&family=Roboto:wght@100;300;400;500;700&family=Source+Code+Pro:wght@200;300;400;600;700&family=Source+Sans+3:wght@200;300;400;500;600;700&display=swap');
+/* 
+font-family: 'Lato', sans-serif;
+font-family: 'Montserrat', sans-serif;
+font-family: 'Roboto', sans-serif;
+font-family: 'Source Code Pro', monospace;
+font-family: 'Source Sans 3', sans-serif; 
+*/
+body,
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: #0f1115;
+    color: #FFFFFF;
+}
+
+a{
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 65px;
+    padding: 0 65px;
+    background-color: #262a35;
+}
+
+.logo-con{
+    /* Todo */
+}
+.logo-con p{
+    /* Todo */
+    font-weight: bold;
+    font-family: 'Roboto', sans-serif;
+}
+
+.logo-con .p{
+    font-size: 30px;
+    color: #188ff3;
+    font-weight: bolder;
+}
+
+.nav-links-con{
+    /* Todo */
+}
+
+.nav-links-con .links{
+    font-family: 'Lato', sans-serif;
+    display: flex;
+}
+
+.nav-links-con .links li {
+    padding: 0 8px;
+    list-style: none;
+    font-size: 18px;
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-family: 'Source Sans 3', sans-serif; 
+    justify-content: center;
+    height: calc(90vh - 65px);
+    /* height: 100vh; */
+}
+
+.error-message-con{
+    width: 65%;
+    height: 45px;
+    background-color: #e74c3c;
+    margin-bottom: 65px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.sub-title h3{
+    font-size: 24px;
+    font-weight: 400;
+    padding: 10px 0;
+}
+
+.sub-title p{
+    font-family: 'Lato', sans-serif;
+    letter-spacing: 1px;
+}
+
+.database {
+    display: flex;
+    padding: 10px 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+}
+
+.database .span{
+    width: 75px;
+    height: 75px;
+    margin: 0 5px;
+    background-color: #262a35;
+    color: #188ff3;
+    font-size: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.sub-title .btn {
+  appearance: button;
+  backface-visibility: hidden;
+  background-color: #405cf5;
+  border-radius: 6px;
+  border-width: 0;
+  box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset,rgba(50, 50, 93, .1) 0 2px 5px 0,rgba(0, 0, 0, .07) 0 1px 1px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  font-family: -apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif;
+  font-size: 100%;
+  height: 44px;
+  line-height: 1.15;
+  margin: 25px 0 0;
+  outline: none;
+  overflow: hidden;
+  padding: 0 25px;
+  position: relative;
+  text-align: center;
+  text-transform: none;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 50%;
+}
+
+.button-9:disabled {
+  cursor: default;
+}
+
+.button-9:focus {
+  box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset, rgba(50, 50, 93, .2) 0 6px 15px 0, rgba(0, 0, 0, .1) 0 2px 2px 0, rgba(50, 151, 211, .3) 0 0 0 4px;
+}
