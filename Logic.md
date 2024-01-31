@@ -1,5 +1,14 @@
 IMPLEMENTATION - BASIC A
 
+NB - TODO 
+    Register/Login functionality working on frontend
+        * Store Token in local storage - future > cookies
+    URL generator working on frontend
+    Browse All public questions
+    Dashboard - logged user view his/her questions
+        * Verified and Unverified questions
+
+
 BACKEND 
 Register - using passport [email & password]
 Login - [email & password]
