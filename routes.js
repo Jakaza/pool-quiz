@@ -85,9 +85,13 @@ router.post('/login', async (req ,res) =>{
 // Render Pages - EJS
 
 router.get('/register', (req, res) =>{
-
     res.render('register')
 })
+
+router.get('/api-setting', (req, res) =>{
+    res.render('api_setting')
+})
+
 router.get('/login', (req, res) =>{
     res.render('login')
 })

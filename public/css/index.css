@@ -88,6 +88,9 @@ main{
     justify-content: center;
 }
 
+.title-con h1{
+    font-size: 3em;
+}
 
 .sub-title h3{
     font-size: 24px;
