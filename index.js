@@ -15,17 +15,17 @@ initDB().then(() => {
 });
        
 
-
 //Middlewares Config
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 app.use(express.json())
 app.use(bodyParser.urlencoded({extended: false}))
+
 
 app.set('view engine', 'ejs')
 app.use(express.static(path.join(__dirname, 'public')))
 
-app.get('/', (req, res) =>{
-    res.render('index')
-})
 
 require('./config/passport')
 app.use(passport.initialize());
