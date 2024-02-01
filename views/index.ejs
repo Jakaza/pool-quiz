@@ -23,17 +23,12 @@
                 <li class="link"> <a href="/add-question">Create Question </a></li>
                 <li class="link"> <a href="/api-setting">API </a></li>
 
-
-                <% if (user) { %>
-                    <h2><%= user.name %></h2>
+                <% if (isAuthenticated) { %>
+                    <li class="link"> <a href="/api-setting"><%= user.username %></a></li>
+                <% }else { %>
+                    <li class="link"> <a href="/login">Login</a></li>
                 <% } %>
-
-                <!-- <% if (isAuthenticated) { %>
-                    <li class="link login"> <a href="/dashboard"><%= username %></a></li>
-                <% } else { %>
-                    <li class="link login"> <a href="/login">Login</a></li>
-                <% } %> -->
-
+    
             </ul>
         </div>
     </header>

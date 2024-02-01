@@ -8,12 +8,14 @@ const passport = require('passport')
 const MultipleChoiceQuestion = require('./models/multipleChoiceQuestion')
 const TrueFalseQuestion = require('./models/trueFalseQuestion')
 const authUser = require('./config/auth')
+const cookie = require('cookie')
 
 // Auth Routes 
 router.post('/register',async (req ,res) =>{
+    console.log(req.body);
     const {username , email , password } = req.body
     if(!username || !email || !password){
-        res.status(StatusCodes.Bad_Request).json({status: false, message: 'Fill in all the field'})
+        return res.status(StatusCodes.Bad_Request).json({status: false, message: 'Fill in all the field'})
     }
     try {
         const userExist = await User.findOne({username})
@@ -66,11 +68,19 @@ router.post('/login', async (req ,res) =>{
 
         const token =  jwt.sign(payload, secretOrPrivateKey, {expiresIn: '1d'} )
 
+        // Set the token as a cookie
+        res.setHeader('Set-Cookie', cookie.serialize('token', token, {
+            httpOnly: true, 
+            maxAge: 86400, // Expires in 1 day (1d * 24h * 60m * 60s)
+            path: '/', // The path for which the cookie is valid
+            secure: process.env.NODE_ENV === 'production', // Set to true if using HTTPS in production
+            sameSite: 'strict', 
+        }));
+
         res.status(StatusCodes.Success).json({
-            status: true, 
+            status: true,
             message: 'User has been successfully logged in.',
-            token: `Bearer ${token}`
-        })
+            });
     } catch (error) {
         res.status(StatusCodes.Internal).json({
             status: false,
@@ -83,6 +93,27 @@ router.post('/login', async (req ,res) =>{
 
 
 // Render Pages - EJS
+
+router.get('/', (req, res, next) =>{
+    const cookies = req.headers.cookie || '';
+    const tokenCookie = cookie.parse(cookies).token;
+
+    if (!tokenCookie) {
+        console.log('No token found. Redirecting to login.');
+        return res.render('index', { isAuthenticated: false });
+    }
+
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        if (err) {
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        if (!user) {
+            return res.render('index',{ isAuthenticated: false })
+        }
+        console.log(user);
+        return res.render('index', { isAuthenticated: true, user: user })
+    })(req, res, next)
+})
 
 router.get('/add-quiz', (req, res) =>{
     res.render('add_quiz_sample')
@@ -115,7 +146,26 @@ router.get('/add-question', (req, res, next) =>{
     })(req, res, next)
 });
 
-router.get('/browse', authUser())
+router.get('/browse', (req, res, next)=>{
+    const cookies = req.headers.cookie || '';
+    const tokenCookie = cookie.parse(cookies).token;
+
+    if (!tokenCookie) {
+        console.log('No token found. Redirecting to login.');
+        return res.status(401).redirect('/login');
+    }
+
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        if (err) {
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        if (!user) {
+            return res.status(401).redirect('login')
+        }
+        console.log(user);
+        return res.render('browse', { isAuthenticated: true, user: user })
+    })(req, res, next)
+})
 
 router.get('/protected-route', (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
