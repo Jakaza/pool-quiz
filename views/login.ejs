@@ -33,26 +33,26 @@
         <div class="container-md">
             <h2>Login</h2>
 
-            <form>
+            <form id="loginForm">
                 <div class="mb-3">
-                  <label for="exampleInputEmail1" class="form-label">Email address</label>
-                  <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                  <label for="username" class="form-label">Username</label>
+                  <input type="text" class="form-control" id="username" aria-describedby="emailHelp">
                 </div>
                 <div class="mb-3">
-                  <label for="exampleInputPassword1" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="exampleInputPassword1">
+                  <label for="password" class="form-label">Password</label>
+                  <input type="password" class="form-control" id="password">
                 </div>
                 <div class="mb-3 form-check">
-                  <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                  <label class="form-check-label" for="exampleCheck1">Remember Me</label>
+                  <input type="checkbox" class="form-check-input" id="remember">
+                  <label class="form-check-label" for="remember">Remember Me</label>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
 
                 <div class="mb-3 mt-3">
-                    <label class="form-check-label" for="exampleCheck1">Don't have account? <a class="link-primary" href="/register"> Create New Account</a></label>
+                    <label class="form-check-label" for="account">Don't have account? <a class="link-primary" href="/register"> Create New Account</a></label>
                 </div>
                 <div class="mb-3 mt-3">
-                    <label class="form-check-label" for="exampleCheck1">Forgot Password? <a class="link-primary" href="/reset-password"> Reset Password</a></label>
+                    <label class="form-check-label" for="forgot">Forgot Password? <a class="link-primary" href="/reset-password"> Reset Password</a></label>
                 </div>
               </form>
 
@@ -65,7 +65,8 @@
     <footer>
 
     </footer>
-    
+
+    <script src="/js/login.js"></script>
 </body>
 </html>
 
