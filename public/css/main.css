@@ -1,0 +1,12 @@
+main{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    text-align: start;
+    font-family: 'Source Sans 3', sans-serif; 
+    justify-content: start;
+    min-height: calc(90vh - 65px);
+    /* height: 100vh; */
+    padding: 25px 65px;
+    height: auto;
+}

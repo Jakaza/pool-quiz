@@ -10,6 +10,11 @@ const TrueFalseQuestion = require('./models/trueFalseQuestion')
 const authUser = require('./config/auth')
 const cookie = require('cookie')
 
+
+router.get('/profile', (req, res)=>{
+    res.render('profile')
+})
+
 // Auth Routes 
 router.post('/register',async (req ,res) =>{
     console.log(req.body);
