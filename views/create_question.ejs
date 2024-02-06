@@ -33,7 +33,7 @@
         <div class="container-md">
             <h2>Add new question</h2>
 
-            <form>
+            <form id="add-question-form" method="post">
           
 
                 <div class="mb-3">
@@ -56,11 +56,11 @@
                               </select>
                         </div>
                         <div class="col">
-                            <label for="Difficulty" class="form-label">Difficulty:</label>
-                            <select id="Difficulty" class="form-select" aria-label="Default select example" >
-                                <option selected value="1">Easy</option>
-                                <option value="2">Medium</option>
-                                <option value="3">Hard</option>
+                            <label for="difficulty" class="form-label">Difficulty:</label>
+                            <select id="difficulty" class="form-select" aria-label="Default select example" >
+                                <option selected value="EASY">Easy</option>
+                                <option value="MEDIUM">Medium</option>
+                                <option value="HARD">Hard</option>
                               </select>
                           </div>
                     </div>
@@ -68,29 +68,30 @@
 
                 <div class="typeA" id="multiple">
                     <div class="mb-3">
-                        <label for="Question" class="form-label">Question</label>
-                        <input type="text" class="form-control" id="Question">
+                        <label for="question" class="form-label">Question</label>
+                        <input type="text" class="form-control" id="question">
+                        <input type="hidden" name="type" value="A">
                       </div>
                       <div class="mb-3">
                         <div class="row g-3">
                             <div class="col">
-                            <label for="answer" class="form-label">Correct Answer</label>
-                              <input type="text" class="form-control" aria-label="First name" id="answer">
+                            <label for="correctAnswer" class="form-label">Correct Answer</label>
+                              <input type="text" name="correctAnswer" class="form-control" aria-label="First name" id="answer">
                             </div>
                             <div class="col">
                                 <label for="incorrect1" class="form-label">Incorrect Answer #1</label>
-                                  <input type="text" class="form-control"  aria-label="First name" id="incorrect1">
+                                  <input type="text" name="incorrect1" class="form-control"  aria-label="First name" id="incorrect1">
                                 </div>
                           </div>
     
                           <div class="row g-3">
                             <div class="col">
                             <label for="incorrect2" class="form-label">Incorrect Answer #2</label>
-                              <input type="text" class="form-control" aria-label="First name" id="incorrect2">
+                              <input type="text" name="incorrect2" class="form-control" aria-label="First name" id="incorrect2">
                             </div>
                             <div class="col">
                                 <label for="incorrect3" class="form-label">Incorrect Answer #3</label>
-                                  <input type="text" class="form-control"  aria-label="First name" id="incorrect3">
+                                  <input type="text" name="incorrect3" class="form-control"  aria-label="First name" id="incorrect3">
                                 </div>
                           </div>
                       </div>
@@ -100,18 +101,17 @@
                 <div style="display: none;"  class="typeB" id="truefalse">
                     <div class="mb-3">
                         <label for="Question" class="form-label">Statement</label>
-                        <input type="text" class="form-control" id="Question">
+                        <input type="text" class="form-control" id="statement">
+                        <input type="hidden" name="type" value="B">
                       </div>
-
-
                       <div class="mb-3">
                         <label for="correctAnswer" style="font-size: large; font-weight: 500;">Correct Answer</label>
                         <div class="form-check mt-2">
-                            <input class="form-check-input" type="radio" name="correctAnswer" id="trueOption" value="True">
+                            <input class="form-check-input" type="radio" name="option" id="trueOption" value="True">
                             <label class="form-check-label" for="trueOption">True</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="correctAnswer" id="falseOption" value="False">
+                            <input class="form-check-input" type="radio" name="option" id="falseOption" value="False">
                             <label class="form-check-label" for="falseOption">False</label>
                         </div>
                       </div>
@@ -119,11 +119,11 @@
                 </div>
           
                   <div class="mb-3">
-                    <label for="Question" class="form-label">References [Provide Links to Respected Sources]</label>
-                    <input type="text" class="form-control" id="Question">
+                    <label for="reference" class="form-label">References [Provide Links to Respected Sources]</label>
+                    <input type="text" name="reference" class="form-control" id="reference">
                   </div>
                 
-                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="submit" id="submitBtn" class="btn btn-primary">Submit</button>
               </div>
               
                
@@ -146,9 +146,11 @@
 
         const typeA = document.getElementById('multiple')
         const typeB = document.getElementById('truefalse')
+        const addQuestionFromEl = document.getElementById('add-question-form')
 
         function checkSelectedType(){
             const selectType = document.getElementById('question-type').value
+            
             if(selectType == 2){
                 typeB.style.display = 'block'
                 typeA.style.display = 'none'
@@ -157,6 +159,82 @@
                 typeB.style.display = 'none'
             }
         }
+
+        addQuestionFromEl.addEventListener('submit', async (e)=>{
+            e.preventDefault()
+            updateUI(true)
+            const url = 'http://localhost:5000/'
+            const selectType = document.getElementById('question-type').value
+            const difficulty = document.getElementById('difficulty').value
+            const reference = addQuestionFromEl['reference'].value
+
+            if(selectType == 2){
+
+                const statement = addQuestionFromEl['statement'].value
+                const selectedOption = document.querySelector('input[name="option"]:checked').value;
+
+                const truefalseQuizData = {
+                    "question": statement,
+                    "references": reference,
+                    "answer": selectedOption? true : false,
+                    "incorrect" : !selectedOption,
+                    "difficulty": difficulty,
+                    "questionType" : "B"
+                }
+                createNewQuestion(`${url}add-question`, truefalseQuizData).then(res =>{
+                    console.log(res);
+                    updateUI(false)
+                })
+            }else if(selectType == 1){
+                const question = addQuestionFromEl['question'].value
+                const correctAnswer = addQuestionFromEl['correctAnswer'].value
+                const incorrect1 = addQuestionFromEl['incorrect1'].value
+                const incorrect2 = addQuestionFromEl['incorrect2'].value
+                const incorrect3 = addQuestionFromEl['incorrect3'].value
+
+                const multipleChoiceData = {
+                    "question": question,
+                    "correctAnswer": correctAnswer,
+                    "incorrect1": incorrect1,
+                    "incorrect2": incorrect2,
+                    "incorrect3": incorrect3,
+                    "references": reference,
+                    "difficulty": difficulty,
+                    "questionType" : "A"
+                }
+
+                createNewQuestion(`${url}add-question`, multipleChoiceData).then(res =>{
+                    console.log(res);
+                    updateUI(false)
+                })
+            }
+
+        })
+
+        async function  createNewQuestion(url, data){
+            console.log(data);
+            const response = await fetch(url, {
+                method: "POST", 
+                mode: "cors",
+                cache: "no-cache", 
+                headers: {
+                "Content-Type": "application/json",
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: JSON.stringify(data), 
+            });
+            return response.json(); // parses JSON response into native JavaScript objects
+        }
+
+        function updateUI(isLoading){
+            if(isLoading){
+                document.getElementById('submitBtn').textContent = 'Loading'
+            }else{
+                document.getElementById('submitBtn').textContent = 'Submit'
+            }
+        }
+
+
 
 
     </script>

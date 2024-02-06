@@ -187,6 +187,7 @@ router.get('/protected-route', (req, res, next) => {
 
 router.post('/add-question', passport.authenticate('jwt', {session: false}) , async (req, res)=>{
     req.body.createdBy = req.user._id
+    console.log(req.body);
     const { questionType, ...cleanedQuestion } = req.body;
     try {
         if(questionType == "A"){
