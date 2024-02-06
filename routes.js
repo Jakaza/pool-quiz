@@ -11,9 +11,6 @@ const authUser = require('./config/auth')
 const cookie = require('cookie')
 
 
-router.get('/profile', (req, res)=>{
-    res.render('profile')
-})
 
 // Auth Routes 
 router.post('/register',async (req ,res) =>{
@@ -373,6 +370,42 @@ router.get('/questions', passport.authenticate('jwt', {session: false}) ,async (
             .json({status: false, message: 'Something went wrong try again...',
         error: err  })
     }
+})
+
+
+
+router.get('/profile', (req, res , next)=>{
+
+    const cookies = req.headers.cookie || '';
+    const tokenCookie = cookie.parse(cookies).token;
+
+    if (!tokenCookie) {
+        console.log('No token found. Redirecting to login.');
+        return res.render('index', { isAuthenticated: false });
+    }
+
+    passport.authenticate('jwt', {session: false}, (err, user , info) =>{
+        if(err){
+            return res.status(500).json({
+                status: false, 
+                message: 'Internal Server Error'
+            })
+        }
+        
+        if(!user){
+            console.log('Info : ', info);
+        }
+        const data = {
+            "username": user.username, 
+            "quizLimit": user.quizlimit,
+            "totalQuiz": user.createdQuestions.length,
+            "quizleft": (user.quizlimit - user.createdQuestions.length),
+            "role": user.roles
+        }
+
+       res.render('profile', data)
+
+    })(req, res, next)
 })
 
 
