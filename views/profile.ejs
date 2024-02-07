@@ -48,8 +48,8 @@
           </thead>
           <tbody>
             <tr>
-              <th scope="row">10</th>
-              <td>25</td>
+              <th scope="row"><%= userVerifiedTotal%></th>
+              <td><%= userUnverifiedTotal %></td>
               <td><%= role %> USER</td>
               <td><%= quizleft %> Left</td>
               <td>Friday, January 19th, 2024</td>
@@ -93,17 +93,25 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">10101</th>
-              <td>General Knowledge</td>
-              <td>Multiple Choice</td>
-              <td>Easy</td>
-              <td>Who is known as the father of computer?</td>
-              <td>
-                <button type="button" class="btn btn-primary btn-sm">Edit</button>
-<button type="button" class="btn btn-danger btn-sm">Delete</button>
-              </td>
-            </tr>
+
+            <% userUnverifiedQuestions.forEach(function(question) { %>
+              <tr>
+                <th scope="row"><%= String(question._id).slice(0, 8) %>...</th>
+                <td>General Knowledge</td>
+                <td>Multiple Choice</td>
+                <td><%= question.difficulty %></td>
+                <td><%= question.question %></td>
+                <td>
+                  <a href="/edit-question/<%=String(question._id)%>">
+                    <button type="button" class="btn btn-primary btn-sm">Edit</button>
+                  </a>
+                  <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                </td>
+              </tr>
+            <% }) %>
+ 
+
+
           </tbody>
     </table>
 

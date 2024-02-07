@@ -32,12 +32,12 @@ var multipleChoiceQuestionSchema = new mongoose.Schema({
         enum: ['EASY', 'MEDIUM', 'HARD']
     },
     isPublic: {
-        type:String,
+        type:Boolean,
         required:true,
         default: false
     },
     isPublished: {
-        type:String,
+        type:Boolean,
         required:true,
         default: false
     },

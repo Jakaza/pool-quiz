@@ -24,7 +24,7 @@ var trueFalseQuestionSchema = new mongoose.Schema({
         default: 'EASY'
     },
     isPublic: {
-        type:String,
+        type:Boolean,
         required:true,
         default: false
     },

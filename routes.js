@@ -132,6 +132,9 @@ router.get('/api-setting', (req, res) =>{
 router.get('/login', (req, res) =>{
     res.render('login')
 })
+router.get('/edit-question/:questionId', (req, res) =>{
+    res.render('edit_question')
+})
 
 
 
@@ -384,7 +387,7 @@ router.get('/profile', (req, res , next)=>{
         return res.render('index', { isAuthenticated: false });
     }
 
-    passport.authenticate('jwt', {session: false}, (err, user , info) =>{
+    passport.authenticate('jwt', {session: false}, async (err, user , info) =>{
         if(err){
             return res.status(500).json({
                 status: false, 
@@ -395,18 +398,40 @@ router.get('/profile', (req, res , next)=>{
         if(!user){
             console.log('Info : ', info);
         }
+
+        const userUnverifiedQuestions = await fetchQuestions(user, false)
+        const userVerifiedQuestions = await fetchQuestions(user, true)
+
+        console.log("userVerifiedQuestions : ", userVerifiedQuestions);
+        console.log("userUnverifiedQuestions : ", userUnverifiedQuestions);
         const data = {
             "username": user.username, 
             "quizLimit": user.quizlimit,
             "totalQuiz": user.createdQuestions.length,
             "quizleft": (user.quizlimit - user.createdQuestions.length),
-            "role": user.roles
+            "role": user.roles,
+            "userUnverifiedQuestions": userUnverifiedQuestions,
+            "userVerifiedQuestions": userVerifiedQuestions,
+            "userUnverifiedTotal": userUnverifiedQuestions.length,
+            "userVerifiedTotal": userVerifiedQuestions.length
         }
 
        res.render('profile', data)
 
     })(req, res, next)
 })
+
+
+async function fetchQuestions(user, isPublished) {
+    const userID = user._id; 
+    const questions = [];
+    const data1 = await MultipleChoiceQuestion.find({ createdBy: userID, isPublic: isPublished });
+    questions.push(...data1);
+    const data2 = await TrueFalseQuestion.find({ createdBy: userID, isPublic: isPublished }); 
+    questions.push(...data2);
+    return questions;
+}
+
 
 
 module.exports = router
