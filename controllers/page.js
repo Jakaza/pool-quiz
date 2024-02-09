@@ -55,6 +55,26 @@ const page = {
             
         })(req, res, next)
     },
+    browse:  (req, res, next)=>{
+        const cookies = req.headers.cookie || '';
+        const tokenCookie = cookie.parse(cookies).token;
+    
+        if (!tokenCookie) {
+            console.log('No token found. Redirecting to login.');
+            return res.status(401).redirect('/login');
+        }
+    
+        passport.authenticate('jwt', { session: false }, (err, user, info) => {
+            if (err) {
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+            if (!user) {
+                return res.status(401).redirect('login')
+            }
+            console.log(user);
+            return res.render('browse', { isAuthenticated: true, user: user })
+        })(req, res, next)
+    },
     registerUser: (req, res) =>{
         res.render('register')
     },

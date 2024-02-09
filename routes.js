@@ -25,6 +25,7 @@ router.get('/register', page.registerUser)
 router.get('/api-setting', page.settings)
 router.get('/login', page.login)
 router.get('/edit-question/:questionId/:questionType', page.editQuestion)
+router.get('/browse', page.browse)
 
 // question api
 router.post('api/add-question', auth ,  question.create)
@@ -32,26 +33,6 @@ router.put('api/update-question/:questionId', auth, question.update )
 router.delete('api/remove-question/:questionId', auth, question.delete)
 
 
-router.get('/browse', (req, res, next)=>{
-    const cookies = req.headers.cookie || '';
-    const tokenCookie = cookie.parse(cookies).token;
-
-    if (!tokenCookie) {
-        console.log('No token found. Redirecting to login.');
-        return res.status(401).redirect('/login');
-    }
-
-    passport.authenticate('jwt', { session: false }, (err, user, info) => {
-        if (err) {
-            return res.status(500).json({ error: 'Internal Server Error' });
-        }
-        if (!user) {
-            return res.status(401).redirect('login')
-        }
-        console.log(user);
-        return res.render('browse', { isAuthenticated: true, user: user })
-    })(req, res, next)
-})
 
 router.get('/protected-route', (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
