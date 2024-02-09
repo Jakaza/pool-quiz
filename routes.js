@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcrypt')
+const cookie = require('cookie')
 const jwt = require('jsonwebtoken')
 const StatusCodes = require('./constants/StatusCodes')
 const User = require('./models/user')
@@ -10,7 +11,8 @@ const TrueFalseQuestion = require('./models/trueFalseQuestion')
 const authUser = require('./config/auth')
 const auth = require('./controllers/auth')
 const page = require('./controllers/page')
-const cookie = require('cookie')
+const question = require('./controllers/question')
+
 
 // auth user
 router.post('/register', auth.register )
@@ -25,6 +27,11 @@ router.get('/add-question', page.addQuestion);
 router.get('/register', page.registerUser)
 router.get('/api-setting', page.settings)
 router.get('/login', page.login)
+
+// question api
+router.post('/add-question', auth ,  question.create)
+
+
 
 
 router.get('/edit-question/:questionId/:questionType', (req, res, next) =>{
@@ -91,43 +98,7 @@ router.get('/protected-route', (req, res, next) => {
 
 // QUESTION ROUTE
 
-router.post('/add-question', passport.authenticate('jwt', {session: false}) , async (req, res)=>{
-    req.body.createdBy = req.user._id
-    console.log(req.body);
-    const { questionType, ...cleanedQuestion } = req.body;
-    try {
-        if(questionType == "A"){
-            const newQuestion = new MultipleChoiceQuestion(cleanedQuestion)
-            await newQuestion.save()
-            const currentUsser = req.user
-            currentUsser.createdQuestions.push(newQuestion._id)
-            await currentUsser.save()
-            res.status(StatusCodes.Created).json({
-                status: true, 
-                message: 'Quiz has been successfully added. Type A',
-                question: newQuestion
-            })
-        }else{
-            const newQuestion = new TrueFalseQuestion(cleanedQuestion)
-            await newQuestion.save()
-            const currentUsser = req.user
-            currentUsser.createdQuestions.push(newQuestion._id)
-            await currentUsser.save()
-            res.status(StatusCodes.Created).json({
-                status: true, 
-                message: 'Quiz has been successfully added.',
-                question: newQuestion
-            })
-        }
-    } catch (error) {
-        console.log(error);
-        res.status(StatusCodes.Internal).json({
-            status: false,
-            message: 'Something went wrong try again...',
-            error  
-        })
-    }
-})
+
 
 router.put('/update-question/:questionId',  passport.authenticate('jwt', {session: false}), async (req, res)=>{
     // req.body.createdBy = req.user._id
