@@ -9,6 +9,7 @@ const MultipleChoiceQuestion = require('./models/multipleChoiceQuestion')
 const TrueFalseQuestion = require('./models/trueFalseQuestion')
 const authUser = require('./config/auth')
 const auth = require('./controllers/auth')
+const page = require('./controllers/page')
 const cookie = require('cookie')
 
 // auth user
@@ -18,48 +19,14 @@ router.post('/login', auth.login)
 // router.post('/reset-password', auth.resetPassword)
 // router.post('/refresh-token', auth.refreshToken)
 
-
 // render pages - ejs
+router.get('/', page.homePage)
+router.get('/add-question', page.addQuestion);
+router.get('/register', page.registerUser)
+router.get('/api-setting', page.settings)
+router.get('/login', page.login)
 
 
-// Render Pages - EJS
-
-router.get('/', (req, res, next) =>{
-    const cookies = req.headers.cookie || '';
-    const tokenCookie = cookie.parse(cookies).token;
-
-    if (!tokenCookie) {
-        console.log('No token found. Redirecting to login.');
-        return res.render('index', { isAuthenticated: false });
-    }
-
-    passport.authenticate('jwt', { session: false }, (err, user, info) => {
-        if (err) {
-            return res.status(500).json({ error: 'Internal Server Error' });
-        }
-        if (!user) {
-            return res.render('index',{ isAuthenticated: false })
-        }
-        console.log(user);
-        return res.render('index', { isAuthenticated: true, user: user })
-    })(req, res, next)
-})
-
-router.get('/add-quiz', (req, res) =>{
-    res.render('add_quiz_sample')
-})
-
-router.get('/register', (req, res) =>{
-    res.render('register')
-})
-
-router.get('/api-setting', (req, res) =>{
-    res.render('api_setting')
-})
-
-router.get('/login', (req, res) =>{
-    res.render('login')
-})
 router.get('/edit-question/:questionId/:questionType', (req, res, next) =>{
 
     passport.authenticate('jwt', {session: false}, async (err, user, info)=>{
@@ -83,18 +50,7 @@ router.get('/edit-question/:questionId/:questionType', (req, res, next) =>{
 
 
 
-router.get('/add-question', (req, res, next) =>{
-    passport.authenticate('jwt', { session: false }, (err, user, info) => {
-        if (err) {
-            return res.status(500).json({ error: 'Internal Server Error' });
-        }
-        if (!user) {
-            console.log('You cannot access add-question you not authorized');
-            return res.status(401).redirect('login')
-        }
-        return res.render('create_question')
-    })(req, res, next)
-});
+
 
 router.get('/browse', (req, res, next)=>{
     const cookies = req.headers.cookie || '';
