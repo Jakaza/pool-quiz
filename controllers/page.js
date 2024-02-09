@@ -1,6 +1,3 @@
-
-
-
 const passport = require('passport')
 const cookie = require('cookie')
 

@@ -18,7 +18,7 @@ router.post('/login', auth.login)
 // router.post('/reset-password', auth.resetPassword)
 // router.post('/refresh-token', auth.refreshToken)
 
-// render pages - ejs
+// rendering pages - ejs
 router.get('/', page.homePage)
 router.get('/add-question', page.addQuestion);
 router.get('/register', page.registerUser)
