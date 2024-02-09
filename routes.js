@@ -27,36 +27,11 @@ router.get('/add-question', page.addQuestion);
 router.get('/register', page.registerUser)
 router.get('/api-setting', page.settings)
 router.get('/login', page.login)
+router.get('/edit-question/:questionId/:questionType', page.editQuestion)
 
 // question api
 router.post('/add-question', auth ,  question.create)
-
-
-
-
-router.get('/edit-question/:questionId/:questionType', (req, res, next) =>{
-
-    passport.authenticate('jwt', {session: false}, async (err, user, info)=>{
-        if(err){
-            res.render('not_authorized') 
-        }
-        if(!user){
-            res.render('not_authorized') 
-        }
-        const {questionId , questionType} = req.params
-        const question = ''
-        if(questionType === 'multiple'){
-            question = await MultipleChoiceQuestion.findOne({_id: questionId})
-        }else{
-            question = await TrueFalseQuestion.findOne({_id: questionId})
-        }
-        question ? res.render('edit_question', {}) : res.redirect('/profile')
-        
-    })(req, res, next)
-})
-
-
-
+router.put('/update-question/:questionId', auth, question.update )
 
 
 router.get('/browse', (req, res, next)=>{
@@ -100,78 +75,7 @@ router.get('/protected-route', (req, res, next) => {
 
 
 
-router.put('/update-question/:questionId',  passport.authenticate('jwt', {session: false}), async (req, res)=>{
-    // req.body.createdBy = req.user._id
-    const { questionType, ...cleanedQuestion } = req.body;
-    const currentUser = req.user
-    const {questionId} = req.params
-    try {
-        if(questionType == "A"){
-            const question = await MultipleChoiceQuestion.findOne({_id: questionId})
 
-            const currentUserId = currentUser._id.toString()
-            const quizUserId = question.createdBy.toString()
-            
-            if(currentUserId !== quizUserId){
-                return res.status(StatusCodes.Not_Found)
-                .json({status: false, message: 'Not authorized to update this quiz'})
-            }
-            if(!question){
-                return res.status(StatusCodes.Not_Found).json({status: false, message: 'Question was not found'})
-            }
-            question.question = req.body?.question ?? question.question
-            question.correctAnswer = req.body?.correctAnswer ?? question.correctAnswer
-            question.incorrect1 = req.body?.incorrect1 ?? question.incorrect1
-            question.incorrect2 = req.body?.incorrect2 ?? question.incorrect2
-            question.incorrect3 = req.body?.incorrect3 ?? question.incorrect3
-            question.references = req.body?.references ?? question.references
-
-            await question.save()
-
-            res.status(StatusCodes.Created).json({
-                status: true, 
-                message: 'Type A Quiz Has Been Successfully Updated.',
-                question: question
-            })
-        }else if(questionType == "B"){
-            const question = await TrueFalseQuestion.findOne({_id: questionId})
-
-            const currentUserId = currentUser._id.toString()
-            const quizUserId = question.createdBy.toString()
-            
-            if(currentUserId !== quizUserId){
-                return res.status(StatusCodes.Not_Found)
-                .json({status: false, message: 'Not authorized to update this quiz'})
-            }
-
-            question.question = req.body?.question ?? question.question
-            question.answer = req.body?.answer ?? question.answer
-            question.incorrect = req.body?.incorrect ?? question.incorrect
-            question.references = req.body?.references ?? question.references
-
-            if(!question){
-                return res.status(StatusCodes.Not_Found).json({status: false, message: 'Question was not found'})
-            }
-
-            await question.save()
-
-            res.status(StatusCodes.Created).json({
-                status: true, 
-                message: 'Type B Quiz Has Been Successfully Updated.',
-                question: newQuestion
-            })
-        }else{
-            return res.status(StatusCodes.Bad_Request).json({status: false, message: 'Invalid Question Type'})
-        }
-    } catch (error) {
-        console.log(error);
-        res.status(StatusCodes.Internal).json({
-            status: false,
-            message: 'Something went wrong try again...',
-            error  
-        })
-    }
-})
 
 // When a user removes a question, only the createdBy ID is removed.
 // The SuperAdmin will determine whether to permanently delete the question or not.

@@ -35,7 +35,26 @@ const page = {
             return res.render('create_question')
         })(req, res, next)
     },
-    
+    editQuestion: (req, res, next) =>{
+
+        passport.authenticate('jwt', {session: false}, async (err, user, info)=>{
+            if(err){
+                res.render('not_authorized') 
+            }
+            if(!user){
+                res.render('not_authorized') 
+            }
+            const {questionId , questionType} = req.params
+            const question = ''
+            if(questionType === 'multiple'){
+                question = await MultipleChoiceQuestion.findOne({_id: questionId})
+            }else{
+                question = await TrueFalseQuestion.findOne({_id: questionId})
+            }
+            question ? res.render('edit_question', {}) : res.redirect('/profile')
+            
+        })(req, res, next)
+    },
     registerUser: (req, res) =>{
         res.render('register')
     },

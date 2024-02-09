@@ -41,6 +41,79 @@ const question = {
                 error  
             })
         }
+    },
+
+    update: async (req, res)=>{
+    // req.body.createdBy = req.user._id
+    const { questionType, ...cleanedQuestion } = req.body;
+    const currentUser = req.user
+    const {questionId} = req.params
+    try {
+        if(questionType == "A"){
+            const question = await MultipleChoiceQuestion.findOne({_id: questionId})
+
+            const currentUserId = currentUser._id.toString()
+            const quizUserId = question.createdBy.toString()
+            
+            if(currentUserId !== quizUserId){
+                return res.status(StatusCodes.Not_Found)
+                .json({status: false, message: 'Not authorized to update this quiz'})
+            }
+            if(!question){
+                return res.status(StatusCodes.Not_Found).json({status: false, message: 'Question was not found'})
+            }
+            question.question = req.body?.question ?? question.question
+            question.correctAnswer = req.body?.correctAnswer ?? question.correctAnswer
+            question.incorrect1 = req.body?.incorrect1 ?? question.incorrect1
+            question.incorrect2 = req.body?.incorrect2 ?? question.incorrect2
+            question.incorrect3 = req.body?.incorrect3 ?? question.incorrect3
+            question.references = req.body?.references ?? question.references
+
+            await question.save()
+
+            res.status(StatusCodes.Created).json({
+                status: true, 
+                message: 'Type A Quiz Has Been Successfully Updated.',
+                question: question
+            })
+        }else if(questionType == "B"){
+            const question = await TrueFalseQuestion.findOne({_id: questionId})
+
+            const currentUserId = currentUser._id.toString()
+            const quizUserId = question.createdBy.toString()
+            
+            if(currentUserId !== quizUserId){
+                return res.status(StatusCodes.Not_Found)
+                .json({status: false, message: 'Not authorized to update this quiz'})
+            }
+
+            question.question = req.body?.question ?? question.question
+            question.answer = req.body?.answer ?? question.answer
+            question.incorrect = req.body?.incorrect ?? question.incorrect
+            question.references = req.body?.references ?? question.references
+
+            if(!question){
+                return res.status(StatusCodes.Not_Found).json({status: false, message: 'Question was not found'})
+            }
+
+            await question.save()
+
+            res.status(StatusCodes.Created).json({
+                status: true, 
+                message: 'Type B Quiz Has Been Successfully Updated.',
+                question: newQuestion
+            })
+        }else{
+            return res.status(StatusCodes.Bad_Request).json({status: false, message: 'Invalid Question Type'})
+        }
+        } catch (error) {
+            console.log(error);
+            res.status(StatusCodes.Internal).json({
+                status: false,
+                message: 'Something went wrong try again...',
+                error  
+            })
+        }
     }
 }
 
