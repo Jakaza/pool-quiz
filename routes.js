@@ -19,6 +19,8 @@ router.post('/login', auth.login)
 // router.post('/refresh-token', auth.refreshToken)
 
 
+// render pages - ejs
+
 
 // Render Pages - EJS
 
