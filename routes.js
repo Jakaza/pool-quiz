@@ -8,87 +8,15 @@ const passport = require('passport')
 const MultipleChoiceQuestion = require('./models/multipleChoiceQuestion')
 const TrueFalseQuestion = require('./models/trueFalseQuestion')
 const authUser = require('./config/auth')
+const auth = require('./controllers/auth')
 const cookie = require('cookie')
 
-// Auth Routes 
-router.post('/register',async (req ,res) =>{
-    console.log(req.body);
-    const {username , email , password } = req.body
-    if(!username || !email || !password){
-        return res.status(StatusCodes.Bad_Request).json({status: false, message: 'Fill in all the field'})
-    }
-    try {
-        const userExist = await User.findOne({username})
-        if(userExist){
-            return res.status(StatusCodes.Bad_Request).json({status: false, message: 'Username is already taken'})
-        }
-        const salt = bcrypt.genSaltSync(10);
-        const hash = bcrypt.hashSync(password, salt);
-
-        const newUser = new User({username,email,password: hash})
-        await newUser.save()
-
-        res.status(StatusCodes.Created).json({
-            status: true, 
-            message: 'User has been successfully created.',
-            user: {
-                id: newUser._id,
-                username,
-                email
-            }
-        })
-    } catch (error) {
-        res.status(StatusCodes.Internal).json({
-            status: false,
-            message: 'Something went wrong try again...',
-            error  
-        })
-    }
-})
-
-router.post('/login', async (req ,res) =>{
-    const {username , password } = req.body
-    try {
-        const userExist = await User.findOne({username})
-
-        if(!userExist){
-            return res.status(StatusCodes.Bad_Request).json({status: false, message: 'Incorrect username or password... enter correct crendential'})
-        }
-        const isMatched = await bcrypt.compare(password, userExist.password)
-        console.log(isMatched);
-        if(!isMatched){
-            return res.status(StatusCodes.Bad_Request).json({status: false, message: 'Incorrect username or password... enter correct crendential'})
-        }
-
-        const payload ={
-            id: userExist._id,
-            username: userExist.username
-        }
-        const secretOrPrivateKey = "Jakaza"
-
-        const token =  jwt.sign(payload, secretOrPrivateKey, {expiresIn: '1d'} )
-
-        // Set the token as a cookie
-        res.setHeader('Set-Cookie', cookie.serialize('token', token, {
-            httpOnly: true, 
-            maxAge: 86400, // Expires in 1 day (1d * 24h * 60m * 60s)
-            path: '/', // The path for which the cookie is valid
-            secure: process.env.NODE_ENV === 'production', // Set to true if using HTTPS in production
-            sameSite: 'strict', 
-        }));
-
-        res.status(StatusCodes.Success).json({
-            status: true,
-            message: 'User has been successfully logged in.',
-            });
-    } catch (error) {
-        res.status(StatusCodes.Internal).json({
-            status: false,
-            message: 'Something went wrong try again...',
-            error  
-        })
-    }
-})
+// auth user
+router.post('/register', auth.register )
+router.post('/login', auth.login)
+// router.post('/verify', auth.verifyEmail)
+// router.post('/reset-password', auth.resetPassword)
+// router.post('/refresh-token', auth.refreshToken)
 
 
 
