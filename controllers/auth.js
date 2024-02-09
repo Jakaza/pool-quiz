@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt')
-
 const User = require('./models/user')
 const StatusCodes = require('./constants/StatusCodes')
 
@@ -56,7 +55,7 @@ const auth = {
                 id: userExist._id,
                 username: userExist.username
             }
-            const secretOrPrivateKey = "Jakaza"
+            const secretOrPrivateKey = process.env.SECRET_PRIVATE_KEY
     
             const token =  jwt.sign(payload, secretOrPrivateKey, {expiresIn: '1d'} )
            

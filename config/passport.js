@@ -17,7 +17,7 @@ const cookieExtractor = function(req) {
 
 const opts = {
     jwtFromRequest: cookieExtractor,
-    secretOrKey: 'Jakaza',
+    secretOrKey: process.env.SECRET_PRIVATE_KEY,
 };
 
 
