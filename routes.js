@@ -132,8 +132,26 @@ router.get('/api-setting', (req, res) =>{
 router.get('/login', (req, res) =>{
     res.render('login')
 })
-router.get('/edit-question/:questionId', (req, res) =>{
-    res.render('edit_question')
+router.get('/edit-question/:questionId/:questionType', (req, res, next) =>{
+
+
+    passport.authenticate('jwt', {session: false}, async (err, user, info)=>{
+        if(err){
+            res.render('not_authorized') 
+        }
+        if(!user){
+            res.render('not_authorized') 
+        }
+        const {questionId , questionType} = req.params
+        const question = ''
+        if(questionType === 'multiple'){
+            question = await MultipleChoiceQuestion.findOne({_id: questionId})
+        }else{
+            question = await TrueFalseQuestion.findOne({_id: questionId})
+        }
+        question ? res.render('edit_question', {}) : res.redirect('/profile')
+        
+    })(req, res, next)
 })
 
 

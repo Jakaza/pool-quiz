@@ -23,6 +23,11 @@ var trueFalseQuestionSchema = new mongoose.Schema({
         enum: ['EASY', 'MEDIUM', 'HARD'],
         default: 'EASY'
     },
+    type: {
+        type:String,
+        required:true,
+        default: 'truefalse'
+    },
     isPublic: {
         type:Boolean,
         required:true,

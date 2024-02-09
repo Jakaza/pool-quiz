@@ -31,6 +31,11 @@ var multipleChoiceQuestionSchema = new mongoose.Schema({
         required:true,
         enum: ['EASY', 'MEDIUM', 'HARD']
     },
+    type: {
+        type:String,
+        required:true,
+        default :'multiple'
+    },
     isPublic: {
         type:Boolean,
         required:true,
