@@ -27,8 +27,9 @@ router.get('/login', page.login)
 router.get('/edit-question/:questionId/:questionType', page.editQuestion)
 
 // question api
-router.post('/add-question', auth ,  question.create)
-router.put('/update-question/:questionId', auth, question.update )
+router.post('api/add-question', auth ,  question.create)
+router.put('api/update-question/:questionId', auth, question.update )
+router.delete('api/remove-question/:questionId', auth, question.delete)
 
 
 router.get('/browse', (req, res, next)=>{
@@ -74,37 +75,10 @@ router.get('/protected-route', (req, res, next) => {
 
 
 
-// When a user removes a question, only the createdBy ID is removed.
-// The SuperAdmin will determine whether to permanently delete the question or not.
-// Ownership is revoked, but the question itself is retained in the database.
-router.delete('/remove-question/:questionId',passport.authenticate('jwt', {session: false}), async (req, res)=>{
-    const {questionId} = req.params
-    const currentUser = req.user
-    console.log(currentUser);
-    try {
-        const question = await MultipleChoiceQuestion.findOne({_id: questionId})
-        if(!question){
-            return res.status(StatusCodes.Not_Found)
-                    .json({status: false, message: 'Question was not found',})
-        }
-        const currentUserId = currentUser._id.toString()
-        const quizUserId = question.createdBy.toString()
-        if(currentUserId !== quizUserId){
-            return res.status(StatusCodes.Bad_Request)
-            .json({status: false, message: 'Not authorized to update this quiz'})
-        }
-        question.createdBy = null
-        await question.save()
-        res.status(StatusCodes.Success)
-        .json({status: true, message: 'Question has been successfully removed'})
 
-    } catch (err) {
-        console.log(err);
-        res.status(StatusCodes.Internal)
-        .json({status: false, message: 'Something went wrong try again...',
-        error: err  })
-    }
-})
+
+
+
 // The SuperAdmin has the authority to delete questions 
 // either without ownership or questions they own.
 router.delete('/delete-question', passport.authenticate('jwt', {session: false}), async()=>{
