@@ -26,6 +26,7 @@ router.get('/api-setting', page.settings)
 router.get('/login', page.login)
 router.get('/edit-question/:questionId/:questionType', page.editQuestion)
 router.get('/browse', page.browse)
+router.get('/profile', page.profile)
 
 // question api
 router.post('api/add-question', auth ,  question.create)
@@ -48,54 +49,6 @@ router.get('/protected-route', (req, res, next) => {
     })(req, res, next);
 });
 
-
-
-
-
-
-router.get('/profile', (req, res , next)=>{
-
-    const cookies = req.headers.cookie || '';
-    const tokenCookie = cookie.parse(cookies).token;
-
-    if (!tokenCookie) {
-        console.log('No token found. Redirecting to login.');
-        return res.render('index', { isAuthenticated: false });
-    }
-
-    passport.authenticate('jwt', {session: false}, async (err, user , info) =>{
-        if(err){
-            return res.status(500).json({
-                status: false, 
-                message: 'Internal Server Error'
-            })
-        }
-        
-        if(!user){
-            console.log('Info : ', info);
-        }
-
-        const userUnverifiedQuestions = await fetchQuestions(user, false)
-        const userVerifiedQuestions = await fetchQuestions(user, true)
-
-        console.log("userVerifiedQuestions : ", userVerifiedQuestions);
-        console.log("userUnverifiedQuestions : ", userUnverifiedQuestions);
-        const data = {
-            "username": user.username, 
-            "quizLimit": user.quizlimit,
-            "totalQuiz": user.createdQuestions.length,
-            "quizleft": (user.quizlimit - user.createdQuestions.length),
-            "role": user.roles,
-            "userUnverifiedQuestions": userUnverifiedQuestions,
-            "userVerifiedQuestions": userVerifiedQuestions,
-            "userUnverifiedTotal": userUnverifiedQuestions.length,
-            "userVerifiedTotal": userVerifiedQuestions.length
-        }
-
-       res.render('profile', data)
-
-    })(req, res, next)
-})
 
 
 async function fetchQuestions(user, isPublished) {
