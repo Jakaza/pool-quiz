@@ -51,26 +51,6 @@ router.get('/protected-route', (req, res, next) => {
 
 
 
-router.get('/questions', passport.authenticate('jwt', {session: false}) ,async (req, res)=>{
-    const currentUser = req.user
-    try {
-        const multipleChoiceQuestions = await MultipleChoiceQuestion.find({createdBy: currentUser._id})
-        const trueFalseQuestion = await TrueFalseQuestion.find({createdBy: currentUser._id})
-        const questions = {
-            'Type A' : multipleChoiceQuestions,
-            'Type B' : trueFalseQuestion
-        }
-        res.status(StatusCodes.Success)
-            .json({status: true , questions: questions
-        })
-    } catch (error) {
-        console.log(err);
-        res.status(StatusCodes.Internal)
-            .json({status: false, message: 'Something went wrong try again...',
-        error: err  })
-    }
-})
-
 
 
 router.get('/profile', (req, res , next)=>{
@@ -126,6 +106,26 @@ async function fetchQuestions(user, isPublished) {
     const data2 = await TrueFalseQuestion.find({ createdBy: userID, isPublic: isPublished }); 
     questions.push(...data2);
     return questions;
+}
+
+async function getQuestions(req, res){
+    const currentUser = req.user
+    try {
+        const multipleChoiceQuestions = await MultipleChoiceQuestion.find({createdBy: currentUser._id})
+        const trueFalseQuestion = await TrueFalseQuestion.find({createdBy: currentUser._id})
+        const questions = {
+            'Type A' : multipleChoiceQuestions,
+            'Type B' : trueFalseQuestion
+        }
+        res.status(StatusCodes.Success)
+            .json({status: true , questions: questions
+        })
+    } catch (error) {
+        console.log(err);
+        res.status(StatusCodes.Internal)
+            .json({status: false, message: 'Something went wrong try again...',
+        error: err  })
+    }
 }
 
 
