@@ -21,6 +21,7 @@ Users can also logg in and create their own questions where they can publish or 
 To use the Pool-Quiz API, you can make HTTP requests to the provided endpoints. The API returns JSON-formatted trivia questions that you can then use in your application.
 Use of this API does not require a API Key, just generate the URL to use it in your own application to retrieve trivia questions.
 
+<!--
 ```bash
 # Example API request
 curl https://pool-quiz.com/api?amount=10&type=multiple
@@ -55,7 +56,7 @@ fetch('https://pool-quiz.com/api.php?amount=10&type=multiple')
   .then(data => console.log(data))
   .catch(error => console.error('Error fetching trivia questions:', error));
 ```
-
+-->
 ## Contributing - Coming Soon (Plan)
 
 
