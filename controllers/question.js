@@ -145,6 +145,33 @@ const question = {
             .json({status: false, message: 'Something went wrong try again...',
             error: err  })
         }
+    },
+
+    // The SuperAdmin has the authority to delete questions 
+    // either without ownership or questions they own.
+    remove: async(req, res)=>{
+        const {questionId} = req.params
+        const currentUser = req.user
+        try {
+            if(!question){
+                return res.status(StatusCodes.Not_Found)
+                        .json({status: false, message: 'Question was not found',})
+            }
+            if(currentUser.roles === "SUPER ADMIN"){
+                // await MultipleChoiceQuestion.findOne({_id: questionId});
+                // if (!question) {
+                //     question = await TrueFalseQuestion.findOne({_id: questionId});
+                // }
+            }
+            res.status(StatusCodes.Success)
+            .json({status: true, message: 'Question has been successfully removed'})
+    
+        } catch (err) {
+            console.log(err);
+            res.status(StatusCodes.Internal)
+            .json({status: false, message: 'Something went wrong try again...',
+            error: err  })
+        }
     }
 }
 

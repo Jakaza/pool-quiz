@@ -30,8 +30,8 @@ router.get('/browse', page.browse)
 // question api
 router.post('api/add-question', auth ,  question.create)
 router.put('api/update-question/:questionId', auth, question.update )
-router.delete('api/remove-question/:questionId', auth, question.delete)
-
+router.delete('api/delete-question/:questionId', auth, question.delete)
+router.delete('api/remove-question/:questionId', auth, question.remove )
 
 
 router.get('/protected-route', (req, res, next) => {
@@ -50,39 +50,7 @@ router.get('/protected-route', (req, res, next) => {
 
 
 
-// QUESTION ROUTE
 
-
-
-
-
-
-
-
-
-// The SuperAdmin has the authority to delete questions 
-// either without ownership or questions they own.
-router.delete('/delete-question', passport.authenticate('jwt', {session: false}), async()=>{
-    const {questionId} = req.params
-    const currentUser = req.user
-    console.log(currentUser);
-    try {
-        const question = await MultipleChoiceQuestion.findOne({_id: questionId})
-        if(!question){
-            return res.status(StatusCodes.Not_Found)
-                    .json({status: false, message: 'Question was not found',})
-        }
-        TODO: // Super-admin must delete question from DB
-        res.status(StatusCodes.Success)
-        .json({status: true, message: 'Question has been successfully removed'})
-
-    } catch (err) {
-        console.log(err);
-        res.status(StatusCodes.Internal)
-        .json({status: false, message: 'Something went wrong try again...',
-        error: err  })
-    }
-})
 router.get('/questions', passport.authenticate('jwt', {session: false}) ,async (req, res)=>{
     const currentUser = req.user
     try {
