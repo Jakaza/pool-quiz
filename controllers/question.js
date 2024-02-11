@@ -4,7 +4,7 @@ const MultipleChoiceQuestion = require('./models/multipleChoiceQuestion')
 const TrueFalseQuestion = require('./models/trueFalseQuestion')
 
 
-const question = {
+const Question = {
     create: async (req, res)=>{ 
         req.body.createdBy = req.user._id
         console.log(req.body);

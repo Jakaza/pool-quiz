@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt')
 const User = require('./models/user')
 const StatusCodes = require('./constants/StatusCodes')
 
-const auth = {
+const Auth = {
     register : async (req ,res) =>{
         const {username , email , password } = req.body
         if(!username || !email || !password){
@@ -81,4 +81,4 @@ const auth = {
 }
 
 
-module.exports = auth
+module.exports = Auth

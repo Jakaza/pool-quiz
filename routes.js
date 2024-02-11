@@ -6,33 +6,33 @@ const passport = require('passport')
 const MultipleChoiceQuestion = require('./models/multipleChoiceQuestion')
 const TrueFalseQuestion = require('./models/trueFalseQuestion')
 const authUser = require('./config/auth')
-const auth = require('./controllers/auth')
-const page = require('./controllers/page')
+const Auth = require('./controllers/auth')
+const Page = require('./controllers/page')
 const question = require('./controllers/question')
 
 
 // auth user
-router.post('/register', auth.register )
-router.post('/login', auth.login)
-// router.post('/verify', auth.verifyEmail)
-// router.post('/reset-password', auth.resetPassword)
-// router.post('/refresh-token', auth.refreshToken)
+router.post('/register', Auth.register )
+router.post('/login', Auth.login)
+// router.post('/verify', Auth.verifyEmail)
+// router.post('/reset-password', Auth.resetPassword)
+// router.post('/refresh-token', Auth.refreshToken)
 
 // rendering pages - ejs
-router.get('/', page.homePage)
-router.get('/add-question', page.addQuestion);
-router.get('/register', page.registerUser)
-router.get('/api-setting', page.settings)
-router.get('/login', page.login)
-router.get('/edit-question/:questionId/:questionType', page.editQuestion)
-router.get('/browse', page.browse)
-router.get('/profile', page.profile)
+router.get('/', Page.homePage)
+router.get('/add-question', Page.addQuestion);
+router.get('/register', Page.registerUser)
+router.get('/api-setting', Page.settings)
+router.get('/login', Page.login)
+router.get('/edit-question/:questionId/:questionType', Page.editQuestion)
+router.get('/browse', Page.browse)
+router.get('/profile', Page.profile)
 
 // question api
 router.post('api/add-question', auth ,  question.create)
 router.put('api/update-question/:questionId', auth, question.update )
 router.delete('api/delete-question/:questionId', auth, question.delete)
-router.delete('api/remove-question/:questionId', auth, question.remove )
+router.delete('api/remove-question/:questionId', auth, Question.remove )
 
 
 router.get('/protected-route', (req, res, next) => {

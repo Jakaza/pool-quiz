@@ -1,7 +1,7 @@
 const passport = require('passport')
 const cookie = require('cookie')
 
-const page = {
+const Page = {
     homePage: (req, res, next) =>{ 
         const cookies = req.headers.cookie || '';
         const tokenCookie = cookie.parse(cookies).token;
@@ -126,4 +126,4 @@ const page = {
     }
 }
 
-module.exports = page
+module.exports = Page
