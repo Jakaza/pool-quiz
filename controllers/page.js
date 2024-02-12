@@ -118,6 +118,12 @@ const Page = {
     },
     login: (req, res) =>{
         res.render('login')
+    },
+    policy: (req, res) =>{
+        res.render('policy')
+    },
+    terms: (req, res) =>{
+        res.render('terms')
     }
 }
 

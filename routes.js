@@ -27,6 +27,8 @@ router.get('/login', Page.login)
 router.get('/edit-question/:questionId/:questionType', Page.editQuestion)
 router.get('/browse', Page.browse)
 router.get('/profile', Page.profile)
+router.get('/policy', Page.policy)
+router.get('/terms', Page.terms)
 
 // question api
 router.post('api/add-question', authUser ,  Question.create)

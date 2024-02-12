@@ -21,6 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 require('./config/passport')
 app.use(passport.initialize());
 app.use(routes)
+app.get('/*',(req,res)=> res.render('404'))
 const server = http.createServer(app)
 const PORT = process.env.PORT || 3000
 server.listen(PORT, ()=>{
