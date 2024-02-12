@@ -8,8 +8,8 @@ const TrueFalseQuestion = require('./models/trueFalseQuestion')
 const authUser = require('./config/auth')
 const Auth = require('./controllers/auth')
 const Page = require('./controllers/page')
-const question = require('./controllers/question')
-
+const Question = require('./controllers/question')
+const isUserLoggedIn = require('./utils/checkLogin')
 
 // auth user
 router.post('/register', Auth.register )
@@ -19,20 +19,20 @@ router.post('/login', Auth.login)
 // router.post('/refresh-token', Auth.refreshToken)
 
 // rendering pages - ejs
-router.get('/', Page.homePage)
-router.get('/add-question', Page.addQuestion);
+router.get('/',isUserLoggedIn, Page.homePage)
+router.get('/add-question', isUserLoggedIn, Page.addQuestion);
 router.get('/register', Page.registerUser)
-router.get('/api-setting', Page.settings)
+router.get('/api-setting', isUserLoggedIn, Page.settings)
 router.get('/login', Page.login)
 router.get('/edit-question/:questionId/:questionType', Page.editQuestion)
 router.get('/browse', Page.browse)
 router.get('/profile', Page.profile)
 
 // question api
-router.post('api/add-question', auth ,  question.create)
-router.put('api/update-question/:questionId', auth, question.update )
-router.delete('api/delete-question/:questionId', auth, question.delete)
-router.delete('api/remove-question/:questionId', auth, Question.remove )
+router.post('api/add-question', authUser ,  Question.create)
+router.put('api/update-question/:questionId', authUser, Question.update )
+router.delete('api/delete-question/:questionId', authUser, Question.delete)
+router.delete('api/remove-question/:questionId', authUser, Question.remove )
 
 
 router.get('/protected-route', (req, res, next) => {
