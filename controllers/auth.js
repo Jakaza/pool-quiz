@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt')
-const User = require('./models/user')
-const StatusCodes = require('./constants/StatusCodes')
+const jwt = require('jsonwebtoken')
+const cookie = require('cookie')
+const User = require('../models/user')
+const StatusCodes = require('../constants/StatusCodes')
 
 const Auth = {
     register : async (req ,res) =>{
@@ -38,9 +40,11 @@ const Auth = {
         }
     },
     login: async(req, res) =>{
+        console.log(req.body);
         const {username , password } = req.body
         try {
             const userExist = await User.findOne({username})
+            console.log(userExist);
             if(!userExist){
                 return res.status(StatusCodes.Bad_Request)
                         .json({status: false, message: 'Incorrect username or password... enter correct crendential'})
@@ -71,6 +75,7 @@ const Auth = {
                 message: 'User has been successfully logged in.',
                 });
         } catch (error) {
+            console.log(error);
             res.status(StatusCodes.Internal).json({
                 status: false,
                 message: 'Something went wrong try again...',
