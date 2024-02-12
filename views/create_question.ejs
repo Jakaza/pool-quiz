@@ -23,7 +23,22 @@
                 <li class="link"> <a href="/browse">Browse </a></li>
                 <li class="link"> <a href="/add-question">Create Question </a></li>
                 <li class="link"> <a href="/api-setting">API </a></li>
-                <li class="link"> <a href="/login">Login </a></li>
+                <% if (isAuthenticated) { %>
+                    <li class="link"> 
+                        <div class="dropdown text-end">
+                            <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                              <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                            </a>
+                            <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1" style="">
+                              <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                              <li><hr class="dropdown-divider"></li>
+                              <li><a class="dropdown-item" href="/signout">Sign out</a></li>
+                            </ul>
+                          </div>
+                    </li>
+                <% }else { %>
+                    <li class="link"> <a href="/login">Login</a></li>
+                <% } %>
             </ul>
         </div>
     </header>

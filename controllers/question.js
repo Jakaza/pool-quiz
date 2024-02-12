@@ -1,8 +1,5 @@
-
-
-const MultipleChoiceQuestion = require('./models/multipleChoiceQuestion')
-const TrueFalseQuestion = require('./models/trueFalseQuestion')
-
+const MultipleChoiceQuestion = require('../models/multipleChoiceQuestion')
+const TrueFalseQuestion = require('../models/trueFalseQuestion')
 
 const Question = {
     create: async (req, res)=>{ 
@@ -175,4 +172,4 @@ const Question = {
     }
 }
 
-module.exports = question
+module.exports = Question

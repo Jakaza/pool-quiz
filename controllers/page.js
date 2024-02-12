@@ -3,11 +3,7 @@ const cookie = require('cookie')
 
 const Page = {
     homePage: (req, res, next) =>{ 
-        const cookies = req.headers.cookie || '';
-        const tokenCookie = cookie.parse(cookies).token;
-        if (!tokenCookie) {
-            return res.render('index', { isAuthenticated: false });
-        }
+
         passport.authenticate('jwt', { session: false }, (err, user, info) => {
             if (err) {
                 return res.status(500).render('server_error');
@@ -15,8 +11,7 @@ const Page = {
             if (!user) {
                 return res.render('index',{ isAuthenticated: false })
             }
-            console.log(user);
-            return res.render('index', { isAuthenticated: true, user: user })
+            return res.render('index', { isAuthenticated: req.isAuthenticated, user: user })
         })(req, res, next)
     },
 
@@ -29,7 +24,7 @@ const Page = {
                 console.log('You cannot access add-question you not authorized');
                 return res.status(401).redirect('login')
             }
-            return res.render('create_question')
+            return res.render('create_question',  { isAuthenticated: req.isAuthenticated, user: user })
         })(req, res, next)
     },
     editQuestion: (req, res, next) =>{
