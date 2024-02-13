@@ -2,19 +2,19 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const cookie = require('cookie')
 const User = require('../models/user')
-const StatusCodes = require('../constants/StatusCodes')
+const {STATUS_CODE , ROLES} = require('../constants/')
 
 const Auth = {
     register : async (req ,res) =>{
         const {username , email , password } = req.body
         if(!username || !email || !password){
-            return res.status(StatusCodes.Bad_Request)
+            return res.status(STATUS_CODE.Bad_Request)
                         .json({status: false, message: 'Fill in all the field'})
         }
         try {
             const userExist = await User.findOne({username})
             if(userExist){
-                return res.status(StatusCodes.Bad_Request)
+                return res.status(STATUS_CODE.Bad_Request)
                             .json({status: false, message: 'Username is already taken'})
             }
             const salt = bcrypt.genSaltSync(10);
@@ -22,7 +22,7 @@ const Auth = {
     
             const newUser = new User({username,email,password: hash})
             await newUser.save()
-            res.status(StatusCodes.Created).json({
+            res.status(STATUS_CODE.Created).json({
                 status: true, 
                 message: 'User has been successfully created.',
                 user: {
@@ -32,7 +32,7 @@ const Auth = {
                 }
             })
         } catch (error) {
-            res.status(StatusCodes.Internal).json({
+            res.status(STATUS_CODE.Internal).json({
                 status: false,
                 message: 'Something went wrong try again...',
                 error  
@@ -46,13 +46,13 @@ const Auth = {
             const userExist = await User.findOne({username})
             console.log(userExist);
             if(!userExist){
-                return res.status(StatusCodes.Bad_Request)
+                return res.status(STATUS_CODE.Bad_Request)
                         .json({status: false, message: 'Incorrect username or password... enter correct crendential'})
             }
             const isMatched = await bcrypt.compare(password, userExist.password)
             console.log(isMatched);
             if(!isMatched){
-                return res.status(StatusCodes.Bad_Request)
+                return res.status(STATUS_CODE.Bad_Request)
                         .json({status: false, message: 'Incorrect username or password... enter correct crendential'})
             }
             const payload ={
@@ -70,13 +70,13 @@ const Auth = {
                 secure: process.env.NODE_ENV === 'production', 
                 sameSite: 'strict', 
             }));
-            res.status(StatusCodes.Success).json({
+            res.status(STATUS_CODE.Success).json({
                 status: true,
                 message: 'User has been successfully logged in.',
                 });
         } catch (error) {
             console.log(error);
-            res.status(StatusCodes.Internal).json({
+            res.status(STATUS_CODE.Internal).json({
                 status: false,
                 message: 'Something went wrong try again...',
                 error  
