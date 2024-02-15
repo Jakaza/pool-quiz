@@ -37,51 +37,6 @@ router.delete('api/delete-question/:questionId', authUser, Question.delete)
 router.delete('api/remove-question/:questionId', authUser, Question.remove )
 
 
-router.get('/protected-route', (req, res, next) => {
-    passport.authenticate('jwt', { session: false }, (err, user, info) => {
-        // Custom callback function logic
-        if (err) {
-            return res.status(500).json({ error: 'Internal Server Error' });
-        }
-        if (!user) {
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
-        // Continue with the route logic if authentication is successful
-        res.json({ message: 'You are authenticated!', user });
-    })(req, res, next);
-});
-
-
-
-async function fetchQuestions(user, isPublished) {
-    const userID = user._id; 
-    const questions = [];
-    const data1 = await MultipleChoiceQuestion.find({ createdBy: userID, isPublic: isPublished });
-    questions.push(...data1);
-    const data2 = await TrueFalseQuestion.find({ createdBy: userID, isPublic: isPublished }); 
-    questions.push(...data2);
-    return questions;
-}
-
-async function getQuestions(req, res){
-    const currentUser = req.user
-    try {
-        const multipleChoiceQuestions = await MultipleChoiceQuestion.find({createdBy: currentUser._id})
-        const trueFalseQuestion = await TrueFalseQuestion.find({createdBy: currentUser._id})
-        const questions = {
-            'Type A' : multipleChoiceQuestions,
-            'Type B' : trueFalseQuestion
-        }
-        res.status(StatusCodes.Success)
-            .json({status: true , questions: questions
-        })
-    } catch (error) {
-        console.log(err);
-        res.status(StatusCodes.Internal)
-            .json({status: false, message: 'Something went wrong try again...',
-        error: err  })
-    }
-}
 
 
 // https://opentdb.com/api.php?amount=10&category=23&difficulty=hard&type=multiple
@@ -144,11 +99,8 @@ router.get('/questions', async (req, res )=>{
             console.log(er);
         }
 })
-
 function isDifficultyChecked(req){
     return req.query.difficulty ? true : false
 }
-
-
 
 module.exports = router
