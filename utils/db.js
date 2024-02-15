@@ -31,7 +31,13 @@ async function getQuestions(req, res){
     }
 }
 
+function isDifficultyChecked(req){
+    return req.query.difficulty ? true : false
+}
+
+
 module.exports = {
     fetchQuestions,
-    getQuestions
+    getQuestions,
+    isDifficultyChecked
 }
