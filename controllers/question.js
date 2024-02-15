@@ -4,8 +4,14 @@ const TrueFalseQuestion = require('../models/trueFalseQuestion')
 const Question = {
     create: async (req, res)=>{ 
         req.body.createdBy = req.user._id
-        console.log(req.body);
+        const quizlimit = Number(req.user.quizlimit)
         const { questionType, ...cleanedQuestion } = req.body;
+        if(quizlimit <= 0){
+            return res.status(StatusCodes.Internal).json({
+                status: false,
+                message: 'Sorry... you have reached the limit to add questions',
+            })
+        }
         try {
             if(questionType == "A"){
                 const newQuestion = new MultipleChoiceQuestion(cleanedQuestion)
@@ -31,7 +37,6 @@ const Question = {
                 })
             }
         } catch (error) {
-            console.log(error);
             res.status(StatusCodes.Internal).json({
                 status: false,
                 message: 'Something went wrong try again...',
