@@ -17,13 +17,13 @@ const multipleChoiceQuestionSchema = new mongoose.Schema({
     category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
-        index: true, // Indexing category field for faster queries
+        index: true, 
     },
     difficulty: {
         type: String,
         required: true,
         enum: ['EASY', 'MEDIUM', 'HARD'],
-        index: true, // Indexing difficulty field for faster queries
+        index: true, 
     },
     type: {
         type: String,

@@ -1,48 +1,43 @@
-const mongoose = require('mongoose'); // Erase if already required
+const mongoose = require('mongoose');
 
-// Declare the Schema of the Mongo model
-var trueFalseQuestionSchema = new mongoose.Schema({
-    question:{
-        type:String,
-        required:true,
+const trueFalseQuestionSchema = new mongoose.Schema({
+    question: {
+        type: String,
+        required: true,
     },
-    answer:{
-        type:Boolean,
-        required:true,
-    },
-    incorrect:{
+    answer: {
         type: Boolean,
-        required:true,
+        required: true,
     },
-    references:{
-        type:String,
-    },
+    references: String,
     difficulty: {
-        type:String,
-        required:true,
+        type: String,
+        required: true,
         enum: ['EASY', 'MEDIUM', 'HARD'],
-        default: 'EASY'
+        default: 'EASY',
+        index: true, 
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category'
+        ref: 'Category',
+        index: true, 
     },
     type: {
-        type:String,
-        required:true,
-        default: 'truefalse'
+        type: String,
+        required: true,
+        default: 'truefalse',
     },
     isPublic: {
-        type:Boolean,
-        required:true,
-        default: false
+        type: Boolean,
+        required: true,
+        default: false,
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
-    }
-});
+        required: true,
+        index: true, 
+    },
+}, { timestamps: true }); 
 
-//Export the model
 module.exports = mongoose.model('TrueFalseQuestion', trueFalseQuestionSchema);
