@@ -23,6 +23,10 @@ var trueFalseQuestionSchema = new mongoose.Schema({
         enum: ['EASY', 'MEDIUM', 'HARD'],
         default: 'EASY'
     },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
+    },
     type: {
         type:String,
         required:true,
