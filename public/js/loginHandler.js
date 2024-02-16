@@ -1,42 +1,44 @@
-const loginForm = document.getElementById('loginForm')
+const loginForm = document.getElementById('loginForm');
 
-loginForm.addEventListener('submit', (e) => {
-    e.preventDefault()
-    const username = loginForm['username'].value
-    const password = loginForm['password'].value
+loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-    loginUser(username,password) 
-})
+    const username = loginForm['username'].value;
+    const password = loginForm['password'].value;
 
-async function loginUser(username,password){
-    const url = 'http://localhost:5000/login'
+    await loginUser(username, password);
+});
+
+async function loginUser(username, password) {
+    const url = 'http://localhost:5000/login';
     const data = {
         username,
         password
-    }
+    };
+
     try {
         const response = await fetch(url, {
-            method: "POST", 
-            mode: "cors", 
-            cache: "no-cache", 
-            credentials: "same-origin", 
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
             headers: {
-              "Content-Type": "application/json",
-              // 'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data), 
-          });
-          const result = await response.json();
-          console.log(result);
-          if (result.status === true) {
+            body: JSON.stringify(data)
+        });
 
+        const result = await response.json();
+        console.log(result);
+
+        if (result.status === true) {
+            // Redirect to home page on successful login
             window.location.href = '/';
-            const loggedInUsername = getUsernameFromToken(); 
+            const loggedInUsername = getUsernameFromToken(); // Get username from token
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
-
 }
 
 function getTokenFromCookie() {
@@ -54,4 +56,3 @@ function getUsernameFromToken() {
     }
     return null;
 }
-
