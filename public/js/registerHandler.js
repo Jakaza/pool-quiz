@@ -1,4 +1,12 @@
 const registerForm = document.getElementById('registerForm');
+const errorMessage = document.getElementById('errorMessage');
+
+const formInputs = registerForm.querySelectorAll('input');
+formInputs.forEach(input => {
+    input.addEventListener('input', () => {
+        errorMessage.textContent = '';
+    });
+});
 
 registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -52,31 +60,33 @@ registerForm.addEventListener('submit', async (e) => {
 
 function validateInput(username, email, password, rePassword) {
     if (!username || !email || !password || !rePassword) {
-        console.error('All fields are required');
+        errorUL('All fields are required');
         return false;
     }
     if (username.length < 3 || username.length > 30) {
-        console.error('Username must be between 3 and 30 characters');
+        errorUL('Username must be between 3 and 30 characters');
         return false;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-        console.error('Invalid email address');
+        errorUL('Invalid email address');
         return false;
     }
     if (password.length < 5 || password.length > 30) {
-        console.error('Password must be between 5 and 30 characters');
+        errorUL('Password must be between 5 and 30 characters');
         return false;
     }
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     if (!passwordRegex.test(password)) {
-        console.error('Password must contain at least one uppercase letter, one lowercase letter, and one digit');
+        errorUL('Password must contain at least one uppercase letter, one lowercase letter, and one digit');
         return false;
     }
     if (password !== rePassword) {
-        console.error('Passwords do not match');
+        errorUL('Passwords do not match');
         return false;
     }
     return true;
 }
-
+function errorUL(message) {
+    errorMessage.textContent = message
+}
