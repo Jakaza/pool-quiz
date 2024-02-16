@@ -5,16 +5,14 @@
         <div class="container-md">
             <h2>Add new question</h2>
 
-            <form id="add-question-form" method="post">
-          
-
+            <div id="form_main-container">
                 <div class="mb-3">
                     <div class="row">
                         <div class="col">
                             <label for="category" class="form-label">Category</label>
                             <select id="category" class="form-select" aria-label="Default select example">
                                 <option selected>Any Category</option>
-                                <option selected value="1">One</option>
+                                <option >One</option>
                                 <option value="2">Two</option>
                                 <option value="3">Three</option>
                               </select>
@@ -23,8 +21,8 @@
                             <label for="question-type" class="form-label">Type:</label>
                             <select id="question-type" class="form-select" aria-label="Default select example" onchange="checkSelectedType()">
                     
-                                <option selected value="1">Multiple Choice</option>
-                                <option value="2">True / False</option>
+                                <option selected value="choice-question">Multiple Choice</option>
+                                <option value="binary-question">True / False</option>
                               </select>
                         </div>
                         <div class="col">
@@ -38,7 +36,7 @@
                     </div>
                 </div>
 
-                <div class="typeA" id="multiple">
+                <form method="post" id="choice-question">
                     <div class="mb-3">
                         <label for="question" class="form-label">Question</label>
                         <input type="text" class="form-control" id="question">
@@ -68,9 +66,9 @@
                           </div>
                       </div>
     
-                </div>
+                </form>
 
-                <div style="display: none;"  class="typeB" id="truefalse">
+                <form method="post" style="display: none;" id="binary-question">
                     <div class="mb-3">
                         <label for="Question" class="form-label">Statement</label>
                         <input type="text" class="form-control" id="statement">
@@ -88,7 +86,7 @@
                         </div>
                       </div>
 
-                </div>
+                </form>
           
                   <div class="mb-3">
                     <label for="reference" class="form-label">References [Provide Links to Respected Sources]</label>
