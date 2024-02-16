@@ -1,60 +1,50 @@
-const mongoose = require('mongoose'); // Erase if already required
+const mongoose = require('mongoose');
 
-// Declare the Schema of the Mongo model
-var multipleChoiceQuestionSchema = new mongoose.Schema({
-    question:{
-        type:String,
-        required:true,
+const multipleChoiceQuestionSchema = new mongoose.Schema({
+    question: {
+        type: String,
+        required: true,
     },
-    correctAnswer:{
-        type:String,
-        required:true,
+    correctAnswer: {
+        type: String,
+        required: true,
     },
-    incorrect1:{
-        type:String,
-        required:true,
+    incorrectOptions: {
+        type: [String],
+        required: true,
     },
-    incorrect2:{
-        type:String,
-        required:true,
-    },
-    incorrect3:{
-        type:String,
-        required:true,
-    },
-    references:{
-        type:String,
-        required:true,
-    },
+    references: String,
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category'
+        ref: 'Category',
+        index: true, // Indexing category field for faster queries
     },
     difficulty: {
-        type:String,
-        required:true,
-        enum: ['EASY', 'MEDIUM', 'HARD']
+        type: String,
+        required: true,
+        enum: ['EASY', 'MEDIUM', 'HARD'],
+        index: true, // Indexing difficulty field for faster queries
     },
     type: {
-        type:String,
-        required:true,
-        default :'multiple'
+        type: String,
+        required: true,
+        default: 'multiple',
     },
     isPublic: {
-        type:Boolean,
-        required:true,
-        default: false
+        type: Boolean,
+        required: true,
+        default: false,
     },
     isPublished: {
-        type:Boolean,
-        required:true,
-        default: false
+        type: Boolean,
+        required: true,
+        default: false,
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true,
+        index: true,
     }
-});
-
-//Export the model
+}, { timestamps: true }); 
 module.exports = mongoose.model('MultipleChoiceQuestion', multipleChoiceQuestionSchema);
