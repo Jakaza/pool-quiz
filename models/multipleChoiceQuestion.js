@@ -26,6 +26,10 @@ var multipleChoiceQuestionSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
+    },
     difficulty: {
         type:String,
         required:true,
