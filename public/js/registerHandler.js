@@ -51,6 +51,32 @@ registerForm.addEventListener('submit', async (e) => {
 });
 
 function validateInput(username, email, password, rePassword) {
-    // Add your validation logic here
-    return true; // Temporary, replace with actual validation
+    if (!username || !email || !password || !rePassword) {
+        console.error('All fields are required');
+        return false;
+    }
+    if (username.length < 3 || username.length > 30) {
+        console.error('Username must be between 3 and 30 characters');
+        return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        console.error('Invalid email address');
+        return false;
+    }
+    if (password.length < 5 || password.length > 30) {
+        console.error('Password must be between 5 and 30 characters');
+        return false;
+    }
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(password)) {
+        console.error('Password must contain at least one uppercase letter, one lowercase letter, and one digit');
+        return false;
+    }
+    if (password !== rePassword) {
+        console.error('Passwords do not match');
+        return false;
+    }
+    return true;
 }
+
