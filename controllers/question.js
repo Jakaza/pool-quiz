@@ -2,6 +2,35 @@ const MultipleChoiceQuestion = require('../models/multipleChoiceQuestion')
 const TrueFalseQuestion = require('../models/trueFalseQuestion')
 
 const Question = {
+    createBinaryQuestion: async() =>{
+        req.body.createdBy = req.user._id
+        const quizlimit = Number(req.user.quizlimit)
+        const {...cleanedQuestion } = req.body;
+        if(quizlimit <= 0){
+            return res.status(StatusCodes.Internal).json({
+                status: false,
+                message: 'Sorry... you have reached the limit to add questions',
+            })
+        }
+        try {
+            const newQuestion = new TrueFalseQuestion(cleanedQuestion)
+            await newQuestion.save()
+            const currentUser = req.user
+            currentUser.createdQuestions.push(newQuestion._id)
+            await currentUser.save()
+            res.status(StatusCodes.Created).json({
+                status: true, 
+                message: 'Binary Question Has Been Successfully Added.',
+                question: newQuestion
+            })
+        } catch (err) {
+            res.status(StatusCodes.Internal).json({
+                status: false,
+                message: 'Something went wrong try again...',
+                error: err  
+            })
+        }
+    },
     create: async (req, res)=>{ 
         req.body.createdBy = req.user._id
         const quizlimit = Number(req.user.quizlimit)
