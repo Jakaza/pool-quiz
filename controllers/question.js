@@ -2,7 +2,7 @@ const MultipleChoiceQuestion = require('../models/multipleChoiceQuestion')
 const TrueFalseQuestion = require('../models/trueFalseQuestion')
 
 const Question = {
-    createBinaryQuestion: async() =>{
+    createBinaryQuestion: async(req, res) =>{
         req.body.createdBy = req.user._id
         const quizlimit = Number(req.user.quizlimit)
         const {...cleanedQuestion } = req.body;
@@ -31,7 +31,7 @@ const Question = {
             })
         }
     },
-    create: async (req, res)=>{ 
+    createChoiceQuestion: async (req, res)=>{ 
         req.body.createdBy = req.user._id
         const quizlimit = Number(req.user.quizlimit)
         const { questionType, ...cleanedQuestion } = req.body;
@@ -41,30 +41,17 @@ const Question = {
                 message: 'Sorry... you have reached the limit to add questions',
             })
         }
-        try {
-            if(questionType == "A"){
-                const newQuestion = new MultipleChoiceQuestion(cleanedQuestion)
-                await newQuestion.save()
-                const currentUser = req.user
-                currentUser.createdQuestions.push(newQuestion._id)
-                await currentUser.save()
-                res.status(StatusCodes.Created).json({
-                    status: true, 
-                    message: 'Quiz has been successfully added. Type A',
-                    question: newQuestion
-                })
-            }else{
-                const newQuestion = new TrueFalseQuestion(cleanedQuestion)
-                await newQuestion.save()
-                const currentUser = req.user
-                currentUser.createdQuestions.push(newQuestion._id)
-                await currentUser.save()
-                res.status(StatusCodes.Created).json({
-                    status: true, 
-                    message: 'Quiz has been successfully added.',
-                    question: newQuestion
-                })
-            }
+        try{
+        await newQuestion.save()
+        const newQuestion = new MultipleChoiceQuestion(cleanedQuestion)
+        const currentUser = req.user
+        currentUser.createdQuestions.push(newQuestion._id)
+        await currentUser.save()
+        res.status(StatusCodes.Created).json({
+            status: true, 
+            message: 'Quiz has been successfully added. Type A',
+            question: newQuestion
+        }) 
         } catch (error) {
             res.status(StatusCodes.Internal).json({
                 status: false,

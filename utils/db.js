@@ -31,9 +31,10 @@ async function getQuestions(req, res){
     }
 }
 
-function createQuestion(){
+export const createQuestion = async (type){
 
 }
+
 
 function isDifficultyChecked(req){
     return req.query.difficulty ? true : false
