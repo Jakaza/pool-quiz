@@ -31,9 +31,39 @@ async function getQuestions(req, res){
     }
 }
 
-export const createQuestion = async (type){
+export const createQuestion = async (req, res, QuestionModel) => {
+    try {
+        req.body.createdBy = req.user._id;
+        const quizLimit = Number(req.user.quizlimit);
 
-}
+        if (quizLimit <= 0) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                status: false,
+                message: 'Sorry... you have reached the limit to add questions',
+            });
+        }
+
+        const { questionType, ...cleanedQuestion } = req.body;
+        const newQuestion = new QuestionModel(cleanedQuestion);
+        await newQuestion.save();
+
+        const currentUser = req.user;
+        currentUser.createdQuestions.push(newQuestion._id);
+        await currentUser.save();
+
+        res.status(StatusCodes.CREATED).json({
+            status: true,
+            message: 'Question has been successfully added.',
+            question: newQuestion,
+        });
+    } catch (err) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            status: false,
+            message: 'Something went wrong, please try again...',
+            error: err,
+        });
+    }
+};
 
 
 function isDifficultyChecked(req){

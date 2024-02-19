@@ -2,65 +2,12 @@ const MultipleChoiceQuestion = require('../models/multipleChoiceQuestion')
 const TrueFalseQuestion = require('../models/trueFalseQuestion')
 
 const Question = {
-    createBinaryQuestion: async(req, res) =>{
-        req.body.createdBy = req.user._id
-        const quizlimit = Number(req.user.quizlimit)
-        const {...cleanedQuestion } = req.body;
-        if(quizlimit <= 0){
-            return res.status(StatusCodes.Internal).json({
-                status: false,
-                message: 'Sorry... you have reached the limit to add questions',
-            })
-        }
-        try {
-            const newQuestion = new TrueFalseQuestion(cleanedQuestion)
-            await newQuestion.save()
-            const currentUser = req.user
-            currentUser.createdQuestions.push(newQuestion._id)
-            await currentUser.save()
-            res.status(StatusCodes.Created).json({
-                status: true, 
-                message: 'Binary Question Has Been Successfully Added.',
-                question: newQuestion
-            })
-        } catch (err) {
-            res.status(StatusCodes.Internal).json({
-                status: false,
-                message: 'Something went wrong try again...',
-                error: err  
-            })
-        }
+    createBinaryQuestion: async (req, res) => {
+        await createQuestion(req, res, TrueFalseQuestion);
     },
-    createChoiceQuestion: async (req, res)=>{ 
-        req.body.createdBy = req.user._id
-        const quizlimit = Number(req.user.quizlimit)
-        const { questionType, ...cleanedQuestion } = req.body;
-        if(quizlimit <= 0){
-            return res.status(StatusCodes.Internal).json({
-                status: false,
-                message: 'Sorry... you have reached the limit to add questions',
-            })
-        }
-        try{
-        await newQuestion.save()
-        const newQuestion = new MultipleChoiceQuestion(cleanedQuestion)
-        const currentUser = req.user
-        currentUser.createdQuestions.push(newQuestion._id)
-        await currentUser.save()
-        res.status(StatusCodes.Created).json({
-            status: true, 
-            message: 'Quiz has been successfully added. Type A',
-            question: newQuestion
-        }) 
-        } catch (error) {
-            res.status(StatusCodes.Internal).json({
-                status: false,
-                message: 'Something went wrong try again...',
-                error  
-            })
-        }
+    createChoiceQuestion: async (req, res) => {
+        await createQuestion(req, res, MultipleChoiceQuestion);
     },
-
     update: async (req, res)=>{
     // req.body.createdBy = req.user._id
     const { questionType, ...cleanedQuestion } = req.body;
@@ -176,10 +123,7 @@ const Question = {
                         .json({status: false, message: 'Question was not found',})
             }
             if(currentUser.roles === "SUPER ADMIN"){
-                // await MultipleChoiceQuestion.findOne({_id: questionId});
-                // if (!question) {
-                //     question = await TrueFalseQuestion.findOne({_id: questionId});
-                // }
+                
             }
             res.status(StatusCodes.Success)
             .json({status: true, message: 'Question has been successfully removed'})
