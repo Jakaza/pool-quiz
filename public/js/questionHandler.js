@@ -13,6 +13,7 @@ function checkSelectedType(){
 }
 choiceQuestion.addEventListener('submit', (e)=>{
     e.preventDefault();
+    updateUI()
     const formData = new FormData(choiceQuestion);
     const url = 'http://localhost:5000/'
     createNewQuestion(`${url}api/choice-question`, formData)
@@ -25,6 +26,7 @@ choiceQuestion.addEventListener('submit', (e)=>{
 })
 binaryQuestion.addEventListener('submit', (e)=>{
     e.preventDefault();
+    updateUI()
     const formData = new FormData(binaryQuestion);
     const url = 'http://localhost:5000/'
     createNewQuestion(`${url}api/binary-question`, formData)
@@ -52,4 +54,11 @@ async function createNewQuestion(url, formData){
         body: JSON.stringify(formData), 
     });
     return response.json(); 
+}
+function updateUI(isLoading = true){
+    if(isLoading){
+        document.getElementById('submitBtn').textContent = 'Loading'
+    }else{
+        document.getElementById('submitBtn').textContent = 'Submit'
+    }
 }
