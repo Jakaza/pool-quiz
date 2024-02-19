@@ -31,7 +31,8 @@ router.get('/policy', Page.policy)
 router.get('/terms', Page.terms)
 
 // question api
-router.post('api/add-question', authUser ,  Question.create)
+router.post('api/choice-question', authUser ,  Question.createChoiceQuestion)
+router.post('api/binary-question', authUser ,  Question.createBinaryQuestion)
 router.put('api/update-question/:questionId', authUser, Question.update )
 router.delete('api/delete-question/:questionId', authUser, Question.delete)
 router.delete('api/remove-question/:questionId', authUser, Question.remove )
