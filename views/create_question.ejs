@@ -39,8 +39,7 @@
                 <form method="post" id="choice-question">
                     <div class="mb-3">
                         <label for="question" class="form-label">Question</label>
-                        <input type="text" class="form-control" id="question">
-                        <input type="hidden" name="type" value="A">
+                        <input type="text" class="form-control" name="question" id="question">
                       </div>
                       <div class="mb-3">
                         <div class="row g-3">
@@ -113,22 +112,6 @@
 
 
     <script>
-
-        const typeA = document.getElementById('multiple')
-        const typeB = document.getElementById('truefalse')
-        const addQuestionFromEl = document.getElementById('add-question-form')
-
-        function checkSelectedType(){
-            const selectType = document.getElementById('question-type').value
-            
-            if(selectType == 2){
-                typeB.style.display = 'block'
-                typeA.style.display = 'none'
-            }else if(selectType == 1){
-                typeA.style.display = 'block'
-                typeB.style.display = 'none'
-            }
-        }
 
         addQuestionFromEl.addEventListener('submit', async (e)=>{
             e.preventDefault()
