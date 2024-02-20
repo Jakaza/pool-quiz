@@ -48,19 +48,29 @@ const Page = {
   },
 
   addQuestion: (req, res, next) => {
-    passport.authenticate("jwt", { session: false }, (err, user, info) => {
-      if (err) {
-        return res.status(500).render("server_error");
+    passport.authenticate(
+      "jwt",
+      { session: false },
+      async (err, user, info) => {
+        if (err) {
+          return res.status(500).render("server_error");
+        }
+        if (!user) {
+          console.log("You cannot access add-question you not authorized");
+          return res.status(401).redirect("login");
+        }
+        const categories = await Category.find();
+
+        if (categories.length <= 0) {
+          res.redirect("home");
+        }
+        return res.render("create_question", {
+          isAuthenticated: req.isAuthenticated,
+          user: user,
+          categories: categories,
+        });
       }
-      if (!user) {
-        console.log("You cannot access add-question you not authorized");
-        return res.status(401).redirect("login");
-      }
-      return res.render("create_question", {
-        isAuthenticated: req.isAuthenticated,
-        user: user,
-      });
-    })(req, res, next);
+    )(req, res, next);
   },
   editQuestion: (req, res, next) => {
     passport.authenticate(

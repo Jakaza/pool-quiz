@@ -12,9 +12,9 @@
                             <label for="category" class="form-label">Category</label>
                             <select id="category" class="form-select" aria-label="Default select example">
                                 <option selected>Any Category</option>
-                                <option >One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
+                                <% categories.forEach(function(category){ %>
+                                    <option value="<%= category.title %>" ><%= category.title %></option>
+                                <%})%>
                               </select>
                         </div>
                         <div class="col">
