@@ -10,6 +10,7 @@ const Auth = require("./controllers/auth");
 const Page = require("./controllers/page");
 const Question = require("./controllers/question");
 const isUserLoggedIn = require("./utils/checkLogin");
+const SuperAdmin = require("./controllers/admin");
 
 // auth user
 router.post("/register", Auth.register);
@@ -41,5 +42,8 @@ router.delete("api/remove-question/:questionId", authUser, Question.remove);
 // https://opentdb.com/api.php?amount=10&category=23&difficulty=hard&type=multiple
 router.get("/generate-url", Question.generateURL);
 router.get("/questions", Question.getAllQuestions);
+
+// admin | SuperAdmin
+router.post("/add-category", SuperAdmin.createCategory);
 
 module.exports = router;
