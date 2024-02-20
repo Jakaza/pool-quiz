@@ -2,9 +2,10 @@
 
 ### USER
 
-    > Register
-    > Login
-    > Add Question
-    > Edit Question
-    > Publish Question
-    > Delete Question
+- [x] > Register
+- [x] > Login
+- [ ] > Logout
+- [ ] > Add Question
+- [ ] > Edit Question
+- [ ] > Publish Question
+- [ ] > Delete Question
