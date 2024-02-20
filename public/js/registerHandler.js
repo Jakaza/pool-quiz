@@ -3,14 +3,16 @@ const errorMessage = document.getElementById('errorMessage');
 const formInputs = registerForm.querySelectorAll('input');
 formInputs.forEach(input => {
     input.addEventListener('input', () => {
+        errorMessage.style.display = 'none'
         errorMessage.textContent = '';
     });
 });
 registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    updateUI()
     const terms = registerForm['terms'].checked;
     if (!terms) {
-        console.error('Must accept terms and conditions');
+        errorUL('Must accept terms and conditions');
         return;
     }
     const username = registerForm['username'].value;
@@ -40,12 +42,15 @@ registerForm.addEventListener('submit', async (e) => {
             body: JSON.stringify(data)
         });
         const result = await response.json();
-        console.log(result);
+        updateUI(false)
         if (result.status === true) {
             window.location.href = `/login?user=${result.user.username}`;
+        }else{
+            errorUL(result.message)
         }
     } catch (error) {
-        console.error(error);
+        updateUI(false)
+        errorUL(error.message)
     }
 });
 function validateInput(username, email, password, rePassword) {
@@ -78,5 +83,20 @@ function validateInput(username, email, password, rePassword) {
     return true;
 }
 function errorUL(message) {
+    updateUI(false)
+    errorMessage.style.display = 'block'
     errorMessage.textContent = message
+}
+function updateUI(isLoading = true) {
+    const submitBtn = document.getElementById('submitBtn');
+    if (isLoading) {
+        submitBtn.innerHTML = 'Loading <i class="fa fa-circle-o-notch fa-spin"></i>';
+        submitBtn.classList.add('loading'); 
+    } else {
+        submitBtn.innerHTML = 'Submitted <i class="fa fa-check"></i>';
+        setTimeout(function() {
+            submitBtn.innerHTML = 'Submit';
+            submitBtn.classList.remove('loading'); 
+        }, 3000);
+    }
 }

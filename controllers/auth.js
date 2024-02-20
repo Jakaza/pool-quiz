@@ -6,6 +6,7 @@ const {STATUS_CODE , ROLES} = require('../constants/')
 
 const Auth = {
     register : async (req ,res) =>{
+        console.log(req.body);
         const {username , email , password } = req.body
         if(!username || !email || !password){
             return res.status(STATUS_CODE.Bad_Request)
