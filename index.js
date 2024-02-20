@@ -11,15 +11,18 @@ const passport = require("passport");
 initDB().then(() => {
   // seedDB()
 });
-//Middlewares Config
+//  middlewares config
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+//  setup ESJ engine
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
+//  init passport
 require("./config/passport");
 app.use(passport.initialize());
+// routes
 app.use(routes);
 app.get("/*", (req, res) => res.render("404"));
 const server = http.createServer(app);
