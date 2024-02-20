@@ -23,7 +23,14 @@
                   <input type="checkbox" class="form-check-input" id="remember">
                   <label class="form-check-label" for="remember">Remember Me</label>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+
+                <div class="mb-3">
+                  <div style="display: none;" class="error error-message" id="errorMessage">
+                    
+                  </div>
+                </div>
+
+                <button id="submitBtn" type="submit" class="btn btn-primary">Submit</button>
 
                 <div class="mb-3 mt-3">
                     <label class="form-check-label" for="account">Don't have account? <a class="link-primary" href="/register"> Create New Account</a></label>
@@ -43,7 +50,7 @@
 
     </footer>
 
-    <script src="/js/login.js"></script>
+    <script src="/js/loginHandler.js"></script>
 </body>
 </html>
 
