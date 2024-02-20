@@ -82,6 +82,7 @@ const Auth = {
           sameSite: "strict",
         })
       );
+
       res.status(STATUS_CODE.Success).json({
         status: true,
         message: "User has been successfully logged in.",

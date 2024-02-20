@@ -30,6 +30,7 @@ router.get("/browse", Page.browse);
 router.get("/profile", Page.profile);
 router.get("/policy", Page.policy);
 router.get("/terms", Page.terms);
+router.get("/dashboard", Page.adminHomePage);
 
 // question api
 router.post("api/choice-question", authUser, Question.createChoiceQuestion);
