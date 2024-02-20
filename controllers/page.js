@@ -1,24 +1,31 @@
 const passport = require("passport");
 const cookie = require("cookie");
 const { ROLES } = require("../constants/");
+const Category = require("../models/Category");
 
 const Page = {
   adminHomePage: (req, res, next) => {
-    passport.authenticate("jwt", { session: false }, (err, user, info) => {
-      if (err) {
-        return res.status(500).render("server_error");
+    passport.authenticate(
+      "jwt",
+      { session: false },
+      async (err, user, info) => {
+        if (err) {
+          return res.status(500).render("server_error");
+        }
+        if (!user) {
+          return res.render("index", { isAuthenticated: false });
+        }
+        if (user.roles == ROLES.SuperAdmin) {
+          const categories = await Category.find();
+          return res.render("admin/dashboard", {
+            isAuthenticated: req.isAuthenticated,
+            user: user,
+            categories: categories,
+          });
+        }
+        res.redirect("/");
       }
-      if (!user) {
-        return res.render("index", { isAuthenticated: false });
-      }
-      if (user.roles == ROLES.SuperAdmin) {
-        return res.render("admin/dashboard", {
-          isAuthenticated: req.isAuthenticated,
-          user: user,
-        });
-      }
-      res.redirect("/");
-    })(req, res, next);
+    )(req, res, next);
   },
   homePage: (req, res, next) => {
     passport.authenticate("jwt", { session: false }, (err, user, info) => {

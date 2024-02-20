@@ -7,6 +7,7 @@ const categorySchema = new mongoose.Schema({
   },
   description: {
     type: String,
+    required: true,
   },
   tags: {
     type: [String],
@@ -21,7 +22,7 @@ const categorySchema = new mongoose.Schema({
   },
   isVisible: {
     type: Boolean,
-    default: true,
+    default: false,
   },
 });
 

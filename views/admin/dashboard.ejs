@@ -109,15 +109,17 @@
       </tr>
     </thead>
     <tbody>
+      <% categories.forEach(function(category) { %>
       <tr>
-        <th scope="row">Title Goes Here</th>
-        <td>Description</td>
-        <td>True</td>
+        <th scope="row"><%=category.title%></th>
+        <td><%=category.description%></td>
+        <td><%=category.isVisible%></td>
         <td>
           <button type="button" class="btn btn-primary btn-sm">Edit</button>
           <button type="button" class="btn btn-danger btn-sm">Delete</button>
         </td>
       </tr>
+      <% }) %>
     </tbody>
   </table>
 </main>
