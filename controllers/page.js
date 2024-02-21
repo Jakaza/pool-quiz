@@ -64,7 +64,7 @@ const Page = {
         if (categories.length <= 0) {
           res.redirect("home");
         }
-        return res.render("create_question", {
+        return res.render("user/create_question", {
           isAuthenticated: req.isAuthenticated,
           user: user,
           categories: categories,
@@ -78,10 +78,10 @@ const Page = {
       { session: false },
       async (err, user, info) => {
         if (err) {
-          res.render("not_authorized");
+          res.render("error/not_authorized");
         }
         if (!user) {
-          res.render("not_authorized");
+          res.render("error/not_authorized");
         }
         const { questionId, questionType } = req.params;
         const question = "";
@@ -90,7 +90,9 @@ const Page = {
         } else {
           question = await TrueFalseQuestion.findOne({ _id: questionId });
         }
-        question ? res.render("edit_question", {}) : res.redirect("/profile");
+        question
+          ? res.render("user/edit_question", {})
+          : res.redirect("/profile");
       }
     )(req, res, next);
   },
@@ -111,7 +113,7 @@ const Page = {
         return res.status(401).redirect("login");
       }
       console.log(user);
-      return res.render("browse", { isAuthenticated: true, user: user });
+      return res.render("user/browse", { isAuthenticated: true, user: user });
     })(req, res, next);
   },
   profile: (req, res, next) => {
@@ -160,19 +162,19 @@ const Page = {
     )(req, res, next);
   },
   registerUser: (req, res) => {
-    res.render("register");
+    res.render("auth/register");
   },
   settings: (req, res) => {
-    res.render("api_setting");
+    res.render("user/setting");
   },
   login: (req, res) => {
-    res.render("login");
+    res.render("auth/login");
   },
   policy: (req, res) => {
-    res.render("policy");
+    res.render("legal/policy");
   },
   terms: (req, res) => {
-    res.render("terms");
+    res.render("legal/terms");
   },
 };
 

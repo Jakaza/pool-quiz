@@ -24,7 +24,7 @@ require("./config/passport");
 app.use(passport.initialize());
 // routes
 app.use(routes);
-app.get("/*", (req, res) => res.render("404"));
+app.get("/*", (req, res) => res.render("error/404"));
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
