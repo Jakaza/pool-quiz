@@ -17,6 +17,9 @@ const Page = {
         }
         if (user.roles == ROLES.SuperAdmin) {
           const categories = await Category.find();
+          categories.forEach((category) => {
+            category.id = String(category._id);
+          });
           return res.render("admin/dashboard", {
             isAuthenticated: req.isAuthenticated,
             user: user,

@@ -36,7 +36,8 @@ document
         if (!result.status) {
           errorUL(result.message);
         }
-        console.log(result);
+        categoryForm.reset();
+        window.location.href = "/dashboard";
       } catch (error) {
         updateUI(false);
         console.log(error);
