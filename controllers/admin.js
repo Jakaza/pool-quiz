@@ -90,11 +90,9 @@ const SuperAdmin = {
   makeUserAdmin: async (req, res) => {
     try {
       const { userId } = req.params;
-      // Fetch user from database and update its role to admin
-      // Example:
-      // const user = await User.findById(userId);
-      // user.role = 'admin';
-      // await user.save();
+      const user = await User.findById(userId);
+      user.role = "ADMIN";
+      await user.save();
       res
         .status(StatusCodes.OK)
         .json({ status: true, message: "User promoted to admin successfully" });

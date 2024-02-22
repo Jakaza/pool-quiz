@@ -23,7 +23,7 @@ var userSchema = new mongoose.Schema({
     require: true,
     default: 25,
   },
-  roles: {
+  role: {
     type: String,
     enum: userRoles,
     default: "BASIC",
