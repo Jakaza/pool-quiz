@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Page</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/css/index.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+
+  <body>
+    <header>
+      <div class="logo-con">
+        <a href="/">
+          <p>
+            <span class="p">P</span>
+            <span class="p-all">ool Quiz</span>
+          </p>
+        </a>
+      </div>
+      <div class="nav-links-con">
+        <ul class="links">
+          <li class="link"><a href="/browse">Logout </a></li>
+        </ul>
+      </div>
+    </header>
+
+    <main>
+      <h2>List Of The Questions</h2>
+
+      <table class="table table-dark table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Verified Questions</th>
+            <th scope="col">Unverified Questions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row"><%= userVerifiedTotal%></th>
+            <td><%= userUnverifiedTotal %></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Verified Questions</h3>
+      <table class="table table-dark table-striped">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Category</th>
+            <th scope="col">Type</th>
+            <th scope="col">Difficulty</th>
+            <th scope="col">Question</th>
+            <th scope="col">View</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">10101</th>
+            <td>General Knowledge</td>
+            <td>Multiple Choice</td>
+            <td>Easy</td>
+            <td>Who is known as the father of computer?</td>
+            <td>
+              <button
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#editModal<%=index%>"
+                class="btn btn-primary btn-sm"
+                style="margin-right: 8px"
+              >
+                View
+              </button>
+            </td>
+
+            <!-- Edit Modal -->
+            <div
+              class="modal fade"
+              id="editModal<%=index%>"
+              tabindex="-1"
+              aria-labelledby="editModalLabel"
+              aria-hidden="true"
+              style="color: black"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">
+                      Edit <%=category.title%>
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <h3>Question: <%=question.question %></h3>
+                    </div>
+                    <div class="mb-3">
+                      <h5>Answer : <%=question.correctAnswer %></h5>
+                    </div>
+                    <div class="mb-3">
+                      <ul>
+                        <li>Incorrect Answers</li>
+                      </ul>
+                    </div>
+                    <div class="mb-3">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox"
+                        id="flexSwitchCheckChecked" <%= category.isVisible ?
+                        "checked" : "" %>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <button id="delete-question" type="button" class="btn">
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                      Save changes
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Unverified Questions</h3>
+      <table class="table table-dark table-striped">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Category</th>
+            <th scope="col">Type</th>
+            <th scope="col">Difficulty</th>
+            <th scope="col">Question</th>
+            <th scope="col">Edit/Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% userUnverifiedQuestions.forEach(function(question) { %>
+          <tr>
+            <th scope="row"><%= String(question._id).slice(0, 8) %>...</th>
+            <td>General Knowledge</td>
+            <td>Multiple Choice</td>
+            <td><%= question.difficulty %></td>
+            <td><%= question.question %></td>
+            <td>
+              <a
+                href="/edit-question/<%=String(question._id)%>/<%=question.type%>"
+              >
+                <button type="button" class="btn btn-primary btn-sm">
+                  Edit
+                </button>
+              </a>
+              <button type="button" class="btn btn-danger btn-sm">
+                Delete
+              </button>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </main>
+  </body>
+</html>
