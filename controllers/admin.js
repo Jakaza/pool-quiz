@@ -35,32 +35,12 @@ const SuperAdmin = {
         .json({ status: false, message: "Failed to edit question" });
     }
   },
-  unPublishQuestion: async (req, res) => {
-    try {
-      const { questionId } = req.params;
-      // Fetch question from database and update its status to unpublished
-      // Example:
-      // const question = await Question.findById(questionId);
-      // question.published = false;
-      // await question.save();
-      res
-        .status(StatusCodes.OK)
-        .json({ status: true, message: "Question unpublished successfully" });
-    } catch (error) {
-      console.error(error);
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ status: false, message: "Failed to unpublish question" });
-    }
-  },
   blockUser: async (req, res) => {
     try {
       const { userId } = req.params;
-      // Fetch user from database and update its status to blocked
-      // Example:
-      // const user = await User.findById(userId);
-      // user.blocked = true;
-      // await user.save();
+      const user = await User.findById(userId);
+      user.blocked = true;
+      await user.save();
       res
         .status(StatusCodes.OK)
         .json({ status: true, message: "User blocked successfully" });
@@ -74,11 +54,9 @@ const SuperAdmin = {
   unBlockUser: async (req, res) => {
     try {
       const { userId } = req.params;
-      // Fetch user from database and update its status to unblocked
-      // Example:
-      // const user = await User.findById(userId);
-      // user.blocked = false;
-      // await user.save();
+      const user = await User.findById(userId);
+      user.blocked = false;
+      await user.save();
       res
         .status(StatusCodes.OK)
         .json({ status: true, message: "User unblocked successfully" });
