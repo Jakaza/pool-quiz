@@ -67,26 +67,6 @@ const SuperAdmin = {
         .json({ status: false, message: "Failed to unblock user" });
     }
   },
-  updateUser: async (req, res) => {
-    try {
-      const { userId } = req.params;
-      const { username, email } = req.body;
-      // Fetch user from database and update its details
-      // Example:
-      // const user = await User.findById(userId);
-      // user.username = username;
-      // user.email = email;
-      // await user.save();
-      res
-        .status(StatusCodes.OK)
-        .json({ status: true, message: "User updated successfully" });
-    } catch (error) {
-      console.error(error);
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ status: false, message: "Failed to update user" });
-    }
-  },
   makeUserAdmin: async (req, res) => {
     try {
       const { userId } = req.params;

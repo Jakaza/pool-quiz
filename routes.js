@@ -45,5 +45,8 @@ router.get("/questions", Question.getAllQuestions);
 
 // admin | SuperAdmin
 router.post("/add-category", SuperAdmin.createCategory);
+router.post("/edit-category/:categoryId", SuperAdmin.editCategory);
+router.post("/users/block/:userId", SuperAdmin.blockUser);
+router.post("/users/unblock/:userId", SuperAdmin.unBlockUser);
 
 module.exports = router;
