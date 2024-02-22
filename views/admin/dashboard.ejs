@@ -113,7 +113,10 @@
       <tr>
         <th scope="row"><%=category.title%></th>
         <td><%=category.description%></td>
-        <td><%=category.isVisible%></td>
+        <td>
+          <%if(category.isVisible){%> Is published <%}else{%>Is Not published
+          <%}%>
+        </td>
         <td>
           <div style="display: flex">
             <button
@@ -153,7 +156,7 @@
               ></button>
             </div>
             <div class="modal-body">
-              <form>
+              <form id="edit-category-form">
                 <div class="mb-3">
                   <label for="editTitle" class="form-label">Title</label>
                   <input
@@ -168,6 +171,11 @@
                     >Description</label
                   >
                   <input
+                    type="hidden"
+                    id="categoryID"
+                    value="<%=category._id %>"
+                  />
+                  <input
                     type="text"
                     class="form-control"
                     id="editDescription"
@@ -178,11 +186,6 @@
                   <input class="form-check-input" type="checkbox"
                   id="flexSwitchCheckChecked" <%= category.isVisible ? "checked"
                   : "" %>
-
-                  <label class="form-check-label" for="flexSwitchCheckChecked">
-                    <%if(category.isVisible){%> Is published <%}else{%>Is Not
-                    published <%}%>
-                  </label>
                 </div>
               </form>
             </div>

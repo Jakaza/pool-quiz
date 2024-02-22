@@ -17,22 +17,22 @@ const SuperAdmin = {
         .json({ status: false, message: "Failed to add question" });
     }
   },
-  publishQuestion: async (req, res) => {
+  editCategory: async (req, res) => {
     try {
-      const { questionId } = req.params;
-      // Fetch question from database and update its status to published
-      // Example:
-      // const question = await Question.findById(questionId);
-      // question.published = true;
-      // await question.save();
+      const { categoryId } = req.params;
+      const category = await Category.findOne({ _id: categoryId });
+      category.title = req.body?.title ?? category.title;
+      category.description = req.body?.description ?? category.description;
+      category.isVisible = req.body?.isVisible ?? category.isVisible;
+      await category.save();
       res
         .status(StatusCodes.OK)
-        .json({ status: true, message: "Question published successfully" });
+        .json({ status: true, message: "Question edited successfully" });
     } catch (error) {
       console.error(error);
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ status: false, message: "Failed to publish question" });
+        .json({ status: false, message: "Failed to edit question" });
     }
   },
   unPublishQuestion: async (req, res) => {
