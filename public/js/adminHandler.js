@@ -1,31 +1,50 @@
 const categoryForm = document.getElementById("categoryForm");
 const editCategoryForm = document.getElementById("edit-category-form");
+
+const errorMessage = document.getElementById("errorMessage");
+
 const formInputs = categoryForm.querySelectorAll("input");
 formInputs.forEach((input) => {
   input.addEventListener("input", () => {
-    errorMessage.style.display = "none";
-    errorMessage.textContent = "";
+    hideErrorMessage();
   });
 });
 
-editCategoryForm.addEventListener("submit", async function (e) {
+editCategoryForm.addEventListener("submit", handleEditCategory);
+
+document
+  .getElementById("submitCategoryBtn")
+  .addEventListener("click", handleAddCategory);
+
+async function handleEditCategory(e) {
   e.preventDefault();
-  const categoryID = editCategoryForm["categoryID"].value;
-  const url = `http://localhost:5000/edit-category/${categoryID}`;
-  const editTitle = editCategoryForm["editTitle"].value;
-  const editDescription = editCategoryForm["editDescription"].value;
-  const flexSwitchCheckChecked =
-    editCategoryForm["flexSwitchCheckChecked"].value;
-  const status =
-    validateInput[(editDescription, editTitle, flexSwitchCheckChecked)];
+  const { categoryID, editTitle, editDescription, flexSwitchCheckChecked } =
+    editCategoryForm.elements;
+  const url = `http://localhost:5000/edit-category/${categoryID.value}`;
+  const status = validateInput(
+    editTitle.value,
+    editDescription.value,
+    flexSwitchCheckChecked.value
+  );
   if (status) {
     await sendHttpRequest(url, {
-      title: editTitle,
-      description: editDescription,
-      isVisible: flexSwitchCheckChecked,
+      title: editTitle.value,
+      description: editDescription.value,
+      isVisible: flexSwitchCheckChecked.value,
     });
   }
-});
+}
+
+async function handleAddCategory() {
+  updateUI();
+  const url = "http://localhost:5000/add-category";
+  const { title, description } = categoryForm.elements;
+  const status = validateInput(title.value, description.value);
+  if (status) {
+    const data = { title: title.value, description: description.value };
+    await sendHttpRequest(url, data);
+  }
+}
 
 async function sendHttpRequest(URL, data) {
   try {
@@ -42,7 +61,7 @@ async function sendHttpRequest(URL, data) {
     const result = await res.json();
     updateUI(false);
     if (!result.status) {
-      errorUL(result.message);
+      displayErrorMessage(result.message);
     }
     categoryForm.reset();
     window.location.href = "/dashboard";
@@ -52,38 +71,25 @@ async function sendHttpRequest(URL, data) {
   }
 }
 
-document
-  .getElementById("submitCategoryBtn")
-  .addEventListener("click", async function () {
-    updateUI();
-    const url = "http://localhost:5000/add-category";
-    const title = categoryForm["title"].value;
-    const description = categoryForm["description"].value;
-    const status = validateInput(title, description);
-    if (status) {
-      const data = {
-        title,
-        description,
-      };
-      await sendHttpRequest(url, data);
-    }
-  });
-
-function validateInput(...inputField) {
-  for (let index = 0; index < inputField.length; index++) {
-    if (!inputField[index]) {
-      errorUL("All fields are required");
+function validateInput(...inputFields) {
+  for (const field of inputFields) {
+    if (!field) {
+      displayErrorMessage("All fields are required");
       return false;
     }
   }
   return true;
 }
 
-function errorUL(message) {
-  updateUI(false);
+function displayErrorMessage(message) {
   errorMessage.style.display = "block";
   errorMessage.textContent = message;
 }
+
+function hideErrorMessage() {
+  errorMessage.style.display = "none";
+}
+
 function updateUI(isLoading = true) {
   const submitBtn = document.getElementById("submitCategoryBtn");
   if (isLoading) {
@@ -91,8 +97,8 @@ function updateUI(isLoading = true) {
       'Loading <i class="fa fa-circle-o-notch fa-spin"></i>';
     submitBtn.classList.add("loading");
   } else {
-    submitBtn.innerHTML = 'Knew Category Added <i class="fa fa-check"></i>';
-    setTimeout(function () {
+    submitBtn.innerHTML = 'New Category Added <i class="fa fa-check"></i>';
+    setTimeout(() => {
       submitBtn.innerHTML = "Submit";
       submitBtn.classList.remove("loading");
     }, 2000);

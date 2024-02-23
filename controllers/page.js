@@ -30,6 +30,30 @@ const Page = {
       }
     )(req, res, next);
   },
+  adminQuestionPage: (req, res, next) => {
+    passport.authenticate(
+      "jwt",
+      { session: false },
+      async (err, user, info) => {
+        if (err) {
+          return res.status(500).render("server_error");
+        }
+        if (!user) {
+          return res.render("index", { isAuthenticated: false });
+        }
+        if (user.role == ROLES.SuperAdmin || user.role == ROLES.Admin) {
+          const questions = await fetchQuestions(MultipleChoiceQuestion);
+          questions = await fetchQuestions(TrueFalseQuestion);
+          return res.render("admin/questions", {
+            isAuthenticated: req.isAuthenticated,
+            user: user,
+            questions: questions,
+          });
+        }
+        res.redirect("/");
+      }
+    )(req, res, next);
+  },
   homePage: (req, res, next) => {
     passport.authenticate("jwt", { session: false }, (err, user, info) => {
       if (err) {
