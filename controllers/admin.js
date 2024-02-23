@@ -9,75 +9,81 @@ const SuperAdmin = {
       await category.save();
       res
         .status(StatusCodes.OK)
-        .json({ status: true, message: "Question added successfully" });
-    } catch (err) {
-      console.log(err);
+        .json({ status: true, message: "Category added successfully" });
+    } catch (error) {
+      console.error("Failed to add category:", error);
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ status: false, message: "Failed to add question" });
+        .json({ status: false, message: "Failed to add category" });
     }
   },
   editCategory: async (req, res) => {
     try {
       const { categoryId } = req.params;
       const category = await Category.findOne({ _id: categoryId });
-      category.title = req.body?.title ?? category.title;
-      category.description = req.body?.description ?? category.description;
-      category.isVisible = req.body?.isVisible ?? category.isVisible;
+      if (!category) {
+        return res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ status: false, message: "Category not found" });
+      }
+      category.title = req.body.title || category.title;
+      category.description = req.body.description || category.description;
+      category.isVisible = req.body.isVisible ?? category.isVisible;
       await category.save();
       res
         .status(StatusCodes.OK)
-        .json({ status: true, message: "Question edited successfully" });
+        .json({ status: true, message: "Category edited successfully" });
     } catch (error) {
-      console.error(error);
+      console.error("Failed to edit category:", error);
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ status: false, message: "Failed to edit question" });
+        .json({ status: false, message: "Failed to edit category" });
+    }
+  },
+  toggleUserBlockStatus: async (req, res, isBlocked) => {
+    try {
+      const { userId } = req.params;
+      const user = await User.findById(userId);
+      if (!user) {
+        return res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ status: false, message: "User not found" });
+      }
+      user.blocked = isBlocked;
+      await user.save();
+      const action = isBlocked ? "blocked" : "unblocked";
+      res
+        .status(StatusCodes.OK)
+        .json({ status: true, message: `User ${action} successfully` });
+    } catch (error) {
+      console.error("Failed to toggle user block status:", error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ status: false, message: "Failed to toggle user block status" });
     }
   },
   blockUser: async (req, res) => {
-    try {
-      const { userId } = req.params;
-      const user = await User.findById(userId);
-      user.blocked = true;
-      await user.save();
-      res
-        .status(StatusCodes.OK)
-        .json({ status: true, message: "User blocked successfully" });
-    } catch (error) {
-      console.error(error);
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ status: false, message: "Failed to block user" });
-    }
+    await SuperAdmin.toggleUserBlockStatus(req, res, true);
   },
   unBlockUser: async (req, res) => {
-    try {
-      const { userId } = req.params;
-      const user = await User.findById(userId);
-      user.blocked = false;
-      await user.save();
-      res
-        .status(StatusCodes.OK)
-        .json({ status: true, message: "User unblocked successfully" });
-    } catch (error) {
-      console.error(error);
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ status: false, message: "Failed to unblock user" });
-    }
+    await SuperAdmin.toggleUserBlockStatus(req, res, false);
   },
   makeUserAdmin: async (req, res) => {
     try {
       const { userId } = req.params;
       const user = await User.findById(userId);
+      if (!user) {
+        return res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ status: false, message: "User not found" });
+      }
       user.role = "ADMIN";
       await user.save();
       res
         .status(StatusCodes.OK)
         .json({ status: true, message: "User promoted to admin successfully" });
     } catch (error) {
-      console.error(error);
+      console.error("Failed to promote user to admin:", error);
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ status: false, message: "Failed to promote user to admin" });
