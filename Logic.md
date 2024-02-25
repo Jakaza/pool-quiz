@@ -4,8 +4,14 @@
 
 - [x] > Register
 - [x] > Login
-- [ ] > Logout
-- [ ] > Add Question
+- [x] > Logout
+- [x] > Add Question
 - [ ] > Edit Question
 - [ ] > Publish Question
 - [ ] > Delete Question
+
+### ADMIN
+- [ ] > View all users
+- [ ] > Ban/Unban user
+- [ ] > Aprove added questions
+     TODO Use chatGPT to aprove question
